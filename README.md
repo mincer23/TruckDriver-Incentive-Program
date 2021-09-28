@@ -11,8 +11,8 @@
 # Development procedures
 Nuxt, the Vue framework we're using, supports hot-reloading in development mode.
 To run in dev mode, clone the repo to your local machine and run:
-1. `npm install`
-2. `cd app`
+1. `cd app`
+2. `npm install`
 3. `npm run dev`
 
 This will start a development server on 
