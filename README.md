@@ -10,11 +10,15 @@
 
 # Development procedures
 Nuxt, the Vue framework we're using, supports hot-reloading in development mode.
-To run in dev mode, clone the repo to your local machine and run `npm run dev`
-in the `app` directory.  This will start a development server on 
+To run in dev mode, clone the repo to your local machine and run:
+1. `npm install`
+2. `cd app`
+3. `npm run dev`
+
+This will start a development server on 
 `localhost:3000` by default. Any changes you make will appear live. Do keep in
-mind that any data will actually still be data from the "production" server, so 
-nuking stuff may have unforseen consequences.
+mind that any data will actually still be data from the "production" database, 
+so nuking stuff may have unforseen consequences.
 
 # Build procedure
 1. `npm run build`
