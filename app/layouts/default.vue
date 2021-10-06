@@ -1,16 +1,10 @@
 <template>
-  <div>
-    <Navbar/>
-    <nuxt/>
+  <div class="w-100 h-100">
+    <Header />
+    <Nuxt />
   </div>
 </template>
 
-<script>
-import Navbar from '~/components/Navbar'
+<style>
 
-export default {
-  components: {
-    Navbar
-  }
-}
-</script>
+</style>
