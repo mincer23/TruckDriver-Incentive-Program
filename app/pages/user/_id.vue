@@ -1,17 +1,24 @@
 <template>
   <b-container v-if="userData">
     <b-row>
-      <b-col cols="6">
+      <b-col cols="5">
         <b-card
-          bg-variant="success"
+          bg-variant="primary"
           text-variant="white"
           class="text-center"
-          header="Balance"
-          header-class="h3"
+          img-left
         >
-          <b-card-text>
-            <span class="h2">400000</span>
-          </b-card-text>
+          <b-card-body>
+            <b-row align-v="center" align-h="center" no-gutters>
+              <b-col cols="4">
+                <b-avatar src="https://placekitten.com/300/300" size="6em" />
+              </b-col>
+              <b-col cols="8">
+                <h2>{{ session.name }}</h2>
+                <h6>Driver for <NuxtLink to="/sponsor/1" class="text-dark">American United Freight Company, Inc.</NuxtLink></h6>
+              </b-col>
+            </b-row>
+          </b-card-body>
         </b-card>
       </b-col>
     </b-row>

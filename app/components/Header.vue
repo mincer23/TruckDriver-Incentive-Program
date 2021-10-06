@@ -1,5 +1,5 @@
 <template>
-  <b-navbar variant="dark" type="dark">
+  <b-navbar variant="dark" type="dark" class="mb-3">
     <b-navbar-brand>
       <NuxtLink to="/" class="text-decoration-none text-white">
         Team8 Rewards
@@ -28,8 +28,10 @@
           Logout
         </b-dropdown-item>
       </b-nav-item-dropdown>
-      <b-nav-item v-else to="/login">
-        <b-button variant="primary">Login</b-button>
+      <b-nav-item v-else>
+        <b-button variant="primary" to="/login">
+          Login
+        </b-button>
       </b-nav-item>
     </b-navbar-nav>
   </b-navbar>

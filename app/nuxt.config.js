@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'cpsc4911project',
+    title: 'Team8 Rewards',
     htmlAttrs: {
       lang: 'en'
     },
