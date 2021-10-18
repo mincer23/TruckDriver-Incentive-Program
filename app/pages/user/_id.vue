@@ -3,21 +3,28 @@
     <b-row>
       <b-col cols="5">
         <b-card
-          bg-variant="primary"
+          bg-variant="light"
           text-variant="white"
           class="text-center"
           img-left
         >
-          <b-card-body>
+          <b-card-header class="bg-primary">
             <b-row align-v="center" align-h="center" no-gutters>
               <b-col cols="4">
                 <b-avatar src="https://placekitten.com/300/300" size="6em" />
               </b-col>
               <b-col cols="8">
-                <h2>{{ session.name }}</h2>
-                <h6>Driver for <NuxtLink to="/sponsor/1" class="text-dark">American United Freight Company, Inc.</NuxtLink></h6>
+                <h2>{{ userData.name }}</h2>
+                <h6 v-if="userData.sponsor">
+                  Driver for <NuxtLink :to="'/sponsor/' + userData.sponsor.id" class="text-dark">
+                    {{ userData.sponsor.name }}
+                  </NuxtLink>
+                </h6>
               </b-col>
             </b-row>
+          </b-card-header>
+          <b-card-body>
+            <p>More Info About User Here</p>
           </b-card-body>
         </b-card>
       </b-col>

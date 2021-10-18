@@ -16,15 +16,37 @@ app.get('/logout', (req, res) => {
   res.redirect('/')
 })
 
+app.post('/login', (req, res) => {
+  if (!(req.body.username && req.body.password)) {
+    res.sendStatus(400)
+  } else {
+    req.session.user = {
+      id: 1,
+      name: 'Michael Scott',
+      birthday: Date('10/5/1980'),
+      joined: new Date(),
+      sponsor: {
+        name: 'American United Freight Company, Inc.',
+        id: 1
+      }
+    }
+    res.status(200)
+  }
+})
+
 // I have a tendency to just shove dev routes in here
 app.get('/test', (req, res) => {
   req.session.user = {
     id: 1,
     name: 'Michael Scott',
     birthday: Date('10/5/1980'),
-    joined: new Date()
+    joined: new Date(),
+    sponsor: {
+      name: 'American United Freight Company, Inc.',
+      id: 1
+    }
   }
-  res.json(req.session.user)
+  res.redirect('/')
 })
 
 // Register the app handler with Nuxt

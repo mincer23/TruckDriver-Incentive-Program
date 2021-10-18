@@ -8,14 +8,22 @@ router.get('/profile/:id', (req, res) => {
       id: 2,
       name: 'Matt Damon',
       birthday: Date('04/20/1984'),
-      joined: new Date()
+      joined: new Date(),
+      sponsor: {
+        name: 'American United Freight Company, Inc.',
+        id: 1
+      }
     })
   } else {
     res.json({
       id: 1,
       name: 'Michael Scott',
       birthday: Date('10/5/1980'),
-      joined: new Date()
+      joined: new Date(),
+      sponsor: {
+        name: 'American United Freight Company, Inc.',
+        id: 1
+      }
     })
   }
 })
