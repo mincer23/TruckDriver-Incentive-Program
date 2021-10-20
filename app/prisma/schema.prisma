@@ -1,0 +1,76 @@
+// Don't change datasource or generator
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Data Models
+model User {
+  id             Int            @id @default(autoincrement())
+  userName       String         @db.VarChar(25) @unique
+  passwordHash   String         @db.VarChar(255)
+  email          String         @db.VarChar(50) @unique
+  joined         DateTime       @default(now())
+  firstName      String         @db.VarChar(25)
+  lastName       String         @db.VarChar(25)
+  driverFor      Organization[] @relation("drivers")
+  staffFor       Organization[] @relation("staff")
+  isAdmin        Boolean        @default(false)
+  orders         Order[]
+  balances       Points[]
+
+  @@index([id])
+}
+
+model Organization {
+  id             Int            @id @default(autoincrement())
+  name           String         @db.VarChar(255) @unique
+  drivers        User[]         @relation("drivers")
+  staff          User[]         @relation("staff")
+  catalog        Catalog?       @relation("catalog")
+  catalogId      Int
+  balances       Points[]
+
+  @@index([id])
+}
+
+model Catalog {
+  id             Int            @id @default(autoincrement())
+  organization   Organization   @relation("catalog", fields: [orgId], references: [id])
+  orgId          Int
+  items          Item[]
+  orders         Order[]
+}
+
+model Item {
+  id             Int            @id @default(autoincrement())
+  etsyId         Int            @unique
+  price          Decimal        @db.Decimal(10,2)
+  name           String         @db.VarChar(50)
+  description    String         @db.VarChar(500)
+  catalogs       Catalog[]
+  orders         Order[]
+}
+
+model Order {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  catalog        Catalog        @relation(fields: [catalogId], references: [id])
+  catalogId      Int
+  items          Item[]
+}
+
+model Points {
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  organization   Organization   @relation(fields: [orgId], references: [id])
+  orgId          Int
+  balance        Decimal        @db.Decimal(10, 2)
+
+  @@id([userId, orgId])
+}

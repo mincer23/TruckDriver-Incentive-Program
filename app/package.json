@@ -2,6 +2,7 @@
   "name": "cpsc4911project",
   "version": "1.0.0",
   "private": true,
+  
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -13,6 +14,7 @@
   "dependencies": {
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/axios": "^5.13.6",
+    "@prisma/client": "^3.3.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.15.1",
@@ -28,6 +30,7 @@
     "@nuxtjs/eslint-module": "^3.0.2",
     "eslint": "^7.29.0",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-vue": "^7.12.1"
+    "eslint-plugin-vue": "^7.12.1",
+    "prisma": "^3.3.0"
   }
 }

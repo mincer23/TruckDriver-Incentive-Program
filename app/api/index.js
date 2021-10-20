@@ -25,10 +25,18 @@ app.post('/login', (req, res) => {
       name: 'Michael Scott',
       birthday: Date('10/5/1980'),
       joined: new Date(),
-      sponsor: {
-        name: 'American United Freight Company, Inc.',
-        id: 1
-      }
+      sponsors: [
+        {
+          name: 'American United Freight Company, Inc.',
+          joined: new Date(),
+          id: 1
+        },
+        {
+          name: 'Worldwide Meat Packers & Pipe Layers, LLC.',
+          joined: new Date(),
+          id: 2
+        }
+      ]
     }
     res.status(200)
   }
