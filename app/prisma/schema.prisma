@@ -44,6 +44,8 @@ model Catalog {
   orgId          Int
   items          Item[]
   orders         Order[]
+
+  @@index([id])
 }
 
 model Item {
@@ -54,6 +56,8 @@ model Item {
   description    String         @db.VarChar(500)
   catalogs       Catalog[]
   orders         Order[]
+
+  @@index([id])
 }
 
 model Order {
@@ -63,6 +67,8 @@ model Order {
   catalog        Catalog        @relation(fields: [catalogId], references: [id])
   catalogId      Int
   items          Item[]
+
+  @@index([id])
 }
 
 model Points {

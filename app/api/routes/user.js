@@ -6,13 +6,21 @@ router.get('/profile/:id', (req, res) => {
   if (req.params.id) {
     res.json({
       id: 2,
-      name: 'Matt Damon',
-      birthday: Date('04/20/1984'),
+      name: 'Vin Diesel',
+      birthday: Date('10/5/1980'),
       joined: new Date(),
-      sponsor: {
-        name: 'American United Freight Company, Inc.',
-        id: 1
-      }
+      sponsors: [
+        {
+          name: 'Family United Air Freight Corporation',
+          joined: new Date(),
+          id: 3
+        },
+        {
+          name: 'Worldwide Meat Packers & Pipe Layers, LLC.',
+          joined: new Date(),
+          id: 2
+        }
+      ]
     })
   } else {
     res.json({
@@ -20,10 +28,18 @@ router.get('/profile/:id', (req, res) => {
       name: 'Michael Scott',
       birthday: Date('10/5/1980'),
       joined: new Date(),
-      sponsor: {
-        name: 'American United Freight Company, Inc.',
-        id: 1
-      }
+      sponsors: [
+        {
+          name: 'American United Freight Company, Inc.',
+          joined: new Date(),
+          id: 1
+        },
+        {
+          name: 'Worldwide Meat Packers & Pipe Layers, LLC.',
+          joined: new Date(),
+          id: 2
+        }
+      ]
     })
   }
 })

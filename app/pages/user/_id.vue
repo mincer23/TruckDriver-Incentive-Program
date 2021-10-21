@@ -15,15 +15,15 @@
               </b-col>
               <b-col cols="8">
                 <h2>{{ userData.name }}</h2>
-                <h6 v-if="userData.sponsor">
-                  Driver for <NuxtLink :to="'/sponsor/' + userData.sponsor.id" class="text-dark">
-                    {{ userData.sponsor.name }}
+                <h6 v-for="sponsor in userData.sponsors" :key="sponsor.id">
+                  Driver for <NuxtLink :to="'/sponsor/' + sponsor.id" class="text-dark">
+                    {{ sponsor.name }}
                   </NuxtLink>
                 </h6>
               </b-col>
             </b-row>
           </b-card-header>
-          <b-card-body>
+          <b-card-body class="text-dark">
             <p>More Info About User Here</p>
           </b-card-body>
         </b-card>
