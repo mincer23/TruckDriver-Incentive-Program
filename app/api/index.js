@@ -1,6 +1,10 @@
-const express = require('express')
+import { prisma } from './prisma.js'
+const bcrypt = require('bcrypt')
 
+const express = require('express')
 const app = express()
+app.use(express.json())
+app.use(express.urlencoded())
 
 // Import all the various route handlers we need
 const userRoutes = require('./routes/user')
@@ -16,46 +20,45 @@ app.get('/logout', (req, res) => {
   res.redirect('/')
 })
 
-app.post('/login', (req, res) => {
-  if (!(req.body.username && req.body.password)) {
-    res.sendStatus(400)
+app.post('/login', async (req, res) => {
+  // check that required fields are here
+  if (!req?.body?.username || !req?.body?.password) {
+    res.sendStatus(400) // if not, yell at the user
   } else {
-    req.session.user = {
-      id: 1,
-      name: 'Michael Scott',
-      birthday: Date('10/5/1980'),
-      joined: new Date(),
-      sponsors: [
-        {
-          name: 'American United Freight Company, Inc.',
-          joined: new Date(),
-          id: 1
-        },
-        {
-          name: 'Worldwide Meat Packers & Pipe Layers, LLC.',
-          joined: new Date(),
-          id: 2
-        }
-      ]
+    // fetch the user matching the username provided
+    const userData = await prisma.user.findUnique({
+      where: {
+        userName: req.body.username
+      },
+      include: {
+        driverFor: true,
+        staffFor: true,
+        orders: true,
+        balances: true
+      }
+    })
+    if (userData) { // prisma returns null on no object found
+      if (comparePassword(req.body.password, userData.passwordHash)) {
+        delete userData.passwordHash // dont put the password in the session obj
+        res.json(userData)
+      } else { // bad password
+        res.sendStatus(400)
+      }
+    } else { // no user found
+      res.sendStatus(400)
     }
-    res.status(200)
   }
 })
 
-// I have a tendency to just shove dev routes in here
-app.get('/test', (req, res) => {
-  req.session.user = {
-    id: 1,
-    name: 'Michael Scott',
-    birthday: Date('10/5/1980'),
-    joined: new Date(),
-    sponsor: {
-      name: 'American United Freight Company, Inc.',
-      id: 1
-    }
+// https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
+const comparePassword = async (password, hash) => {
+  try {
+    return await bcrypt.compare(password, hash)
+  } catch (error) {
+    console.log(error)
   }
-  res.redirect('/')
-})
+  return false
+}
 
 // Register the app handler with Nuxt
 export default {

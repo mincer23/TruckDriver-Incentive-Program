@@ -1,3 +1,4 @@
+import { prisma } from '../prisma.js'
 const express = require('express')
 const router = express.Router()
 

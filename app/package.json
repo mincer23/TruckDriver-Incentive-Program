@@ -2,7 +2,9 @@
   "name": "cpsc4911project",
   "version": "1.0.0",
   "private": true,
-  
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -15,6 +17,7 @@
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/axios": "^5.13.6",
     "@prisma/client": "^3.3.0",
+    "bcrypt": "^5.0.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.15.1",
@@ -22,7 +25,7 @@
     "express-session": "^1.17.2",
     "nuxt": "^2.15.7",
     "nuxt-session": "^1.0.3",
-    "sanitize": "^2.1.0"
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",

@@ -22,6 +22,20 @@ model User {
   isAdmin        Boolean        @default(false)
   orders         Order[]
   balances       Points[]
+  applications   Application[]
+  logs           LogEvent[]
+
+  @@index([id])
+}
+
+model Application {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  organization   Organization   @relation(fields: [orgId], references: [id])
+  orgId          Int
+  submitted      DateTime       @default(now())
+  status         String         @default("WAITING") // "WAITING" "ACCEPTED" "DENIED" "RESCINDED"
 
   @@index([id])
 }
@@ -31,16 +45,17 @@ model Organization {
   name           String         @db.VarChar(255) @unique
   drivers        User[]         @relation("drivers")
   staff          User[]         @relation("staff")
-  catalog        Catalog?       @relation("catalog")
-  catalogId      Int
+  catalog        Catalog?
+  catalogId      Int?
   balances       Points[]
+  applications   Application[]
 
   @@index([id])
 }
 
 model Catalog {
   id             Int            @id @default(autoincrement())
-  organization   Organization   @relation("catalog", fields: [orgId], references: [id])
+  organization   Organization   @relation(fields: [orgId], references: [id])
   orgId          Int
   items          Item[]
   orders         Order[]
@@ -66,7 +81,10 @@ model Order {
   userId         Int
   catalog        Catalog        @relation(fields: [catalogId], references: [id])
   catalogId      Int
+  placed         DateTime       @default(now())
+  status         String         @db.VarChar(10) @default("PLACED") // PLACED, CANCELLED, SHIPPED, DELIVERED
   items          Item[]
+  event          LogEvent?
 
   @@index([id])
 }
@@ -79,4 +97,24 @@ model Points {
   balance        Decimal        @db.Decimal(10, 2)
 
   @@id([userId, orgId])
+}
+
+model LogEvent {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  time           DateTime       @default(now())
+  ipAddress      String         @db.VarChar(15)
+  modelName      String?        @db.VarChar(12) // "ORGANIZATION" "POINTS" "USER" etc
+  reason         String?        @db.VarChar(255)
+  objectId       Int?           // ex: point update, this is the actual balance id
+  orgId          Int?           // ex: point update, this is the id of the org who reduced the points
+  actorId        Int?           // ex: point update, this is the id of the user who told the org to reduce points
+  transaction    Order?         @relation(fields: [transactionId], references: [id])
+  transactionId  Int?
+  accessType     String?        @db.VarChar(6) // "CREATE" "MODIFY" "DELETE"
+  oldValue       String?        @db.VarChar(255)
+  newValue       String?        @db.VarChar(255)
+
+  @@index([id])
 }

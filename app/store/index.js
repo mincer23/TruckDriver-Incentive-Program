@@ -1,10 +1,15 @@
 export const state = () => ({
-  session: null
+  session: null,
+  displayMode: 'light'
 })
 
 export const mutations = {
   setUser (state, user) {
     state.session = user
+  },
+
+  setDisplayMode (state, mode) {
+    state.displayMode = mode
   }
 }
 
