@@ -43,8 +43,11 @@ export default {
       const result = await this.$http.$post('/api/login', data)
       this.state = !!result
       if (result) {
+        console.log(result)
         this.setUser(result)
-        this.$router.push('/')
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
       }
     }
   }

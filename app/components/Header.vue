@@ -14,11 +14,11 @@
       </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-item-dropdown v-if="session" right>
+      <b-nav-item-dropdown v-if="getUser" right>
         <template #button-content>
-          <b-avatar src="https://placekitten.com/300/300" class="mr-1" /> {{ session.name }}
+          <b-avatar src="https://placekitten.com/300/300" class="mr-1" /> {{ getUser.name }}
         </template>
-        <b-dropdown-item :to="'/user/' + session.id">
+        <b-dropdown-item :to="'/users/' + getUser.id">
           Account
         </b-dropdown-item>
         <b-dropdown-item href="/settings">
@@ -38,10 +38,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapState(['session'])
+    ...mapGetters(['getUser'])
   }
 }
 </script>

@@ -7,7 +7,7 @@ router.get('/profile/:id', async (req, res) => {
   if (req.params.id) { // get the profile they asked for
     userData = await prisma.user.findUnique({
       where: {
-        userName: req.params.id
+        id: Number(req.params.id)
       },
       select: {
         id: true,

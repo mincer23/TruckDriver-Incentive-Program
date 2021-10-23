@@ -13,6 +13,12 @@ export const mutations = {
   }
 }
 
+export const getters = {
+  getUser: (state) => {
+    return state.session
+  }
+}
+
 export const actions = {
   nuxtServerInit ({ commit }, { req }) {
     commit('setUser', req?.session?.user)

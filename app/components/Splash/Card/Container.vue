@@ -11,7 +11,7 @@
     </b-card-text>
 
     <b-button v-b-toggle.balance-collapse variant="info" class="mb-3">
-      Recent History
+      {{ collapseButtonText }}
     </b-button>
 
     <SplashCardCollapseContainer
@@ -25,6 +25,10 @@
 <script>
 export default {
   props: {
+    collapseButtonText: {
+      type: String,
+      default: 'Recent History'
+    },
     header: {
       type: String,
       default: 'Point Balance'

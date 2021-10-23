@@ -1,5 +1,5 @@
 <template>
-  <b-container v-if="userData">
+  <b-container v-if="orgData">
     <b-row>
       <b-col cols="5">
         <b-card
@@ -16,7 +16,7 @@
               <b-col cols="8">
                 <h2>{{ userData.name }}</h2>
                 <h6 v-for="sponsor in userData.sponsors" :key="sponsor.id">
-                  Driver for <NuxtLink :to="'/sponsor/' + sponsor.id" class="text-dark">
+                  Driver for <NuxtLink :to="'/organization/' + sponsor.id" class="text-dark">
                     {{ sponsor.name }}
                   </NuxtLink>
                 </h6>
@@ -36,20 +36,8 @@
 import { mapState } from 'vuex'
 export default {
   async asyncData ({ req, $http, route }) {
-    let searchId
-    if (route.params.id) {
-      searchId = route.params.id
-    } else if (req?.session?.user?.id) {
-      searchId = req.session.user.id
-    } else {
-      searchId = null
-    }
-
-    let userData
-    if (searchId) {
-      userData = await $http.$get('api/user/profile/' + searchId)
-    }
-    return { userData, searchId }
+    const userData = await $http.$get('api/users/organizations/' + route.params.id)
+    return { userData }
   },
   computed: {
     ...mapState(['session'])

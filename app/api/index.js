@@ -2,17 +2,25 @@ import { prisma } from './prisma.js'
 const bcrypt = require('bcrypt')
 
 const express = require('express')
+const session = require('express-session')
 const app = express()
+app.use(session({
+  secret: 'legalize glue',
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
 app.use(express.json())
 app.use(express.urlencoded())
 
 // Import all the various route handlers we need
-const userRoutes = require('./routes/user')
-const catalogRoutes = require('./routes/catalog')
+const userRoutes = require('./routes/users')
+const catalogRoutes = require('./routes/catalogs')
+const organizationRoutes = require('./routes/organizations')
 
 // Use route handlers
-app.use('/user', userRoutes)
-app.use('/catalog', catalogRoutes)
+app.use('/users', userRoutes)
+app.use('/catalogs', catalogRoutes)
+app.use('/organizations', organizationRoutes)
 
 // There are a few root-level routes we need to take care of
 app.get('/logout', (req, res) => {
