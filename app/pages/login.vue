@@ -16,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
       <p />
       <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
       <p class="forgot-password text-right mt-2 mb-4">
-        <router-link to="/forgot-password">Forgot password?</router-link>
+        <NuxtLink to="/forgot-password">Forgot password?</NuxtLink>
       </p>
     </form>
   </div>
@@ -24,4 +24,4 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 <script>
 
-</script>
+</script> 
