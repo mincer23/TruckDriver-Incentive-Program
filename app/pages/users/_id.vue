@@ -14,7 +14,7 @@
                 <b-avatar src="https://placekitten.com/300/300" size="6em" />
               </b-col>
               <b-col cols="8">
-                <h2>{{ userData.name }}</h2>
+                <h2>{{ userData.firstName }} {{ userData.lastName }}</h2>
                 <h6 v-for="sponsor in userData.sponsors" :key="sponsor.id">
                   Driver for <NuxtLink :to="'/sponsor/' + sponsor.id" class="text-dark">
                     {{ sponsor.name }}
@@ -24,7 +24,7 @@
             </b-row>
           </b-card-header>
           <b-card-body class="text-dark">
-            <p>More Info About User Here</p>
+            <h6>Joined {{ new Date(userData.joined).toLocaleDateString('en-us') }}</h6>
           </b-card-body>
         </b-card>
       </b-col>
@@ -34,6 +34,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   async asyncData ({ req, $http, route }) {
     let searchId
