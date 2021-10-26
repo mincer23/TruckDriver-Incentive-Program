@@ -2,16 +2,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 <template>
   <div class="login">
-    <form>
+    <form method="post">
       <h1>Log In</h1>
       <p />
       <div class="form-input">
-        <label>Email Address</label>
-        <input type="email" class="form-control form-control-lg">
+        <label>Username</label>
+        <input type="text" class="form-control form-control-lg" required />
       </div>
       <div class="form-input">
         <label>Password</label>
-        <input type="password" class="form-control form-control-lg">
+        <input type="password" class="form-control form-control-lg" required />
       </div>
       <p />
       <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
@@ -24,4 +24,24 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 <script>
 
-</script> 
+export default ({
+  data () {
+    return {
+      username: '',
+      password: '',
+      error: null
+    }
+  },
+
+  methods: {
+    async login () {
+      await $http.post('/login', {
+        data: {
+          username: this.username,
+          password: this.password
+        }
+      })
+    }
+  }
+})
+</script>
