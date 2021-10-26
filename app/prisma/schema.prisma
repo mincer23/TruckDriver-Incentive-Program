@@ -1,0 +1,120 @@
+// Don't change datasource or generator
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Data Models
+model User {
+  id             Int            @id @default(autoincrement())
+  userName       String         @db.VarChar(25) @unique
+  passwordHash   String         @db.VarChar(255)
+  email          String         @db.VarChar(50) @unique
+  joined         DateTime       @default(now())
+  firstName      String         @db.VarChar(25)
+  lastName       String         @db.VarChar(25)
+  driverFor      Organization[] @relation("drivers")
+  staffFor       Organization[] @relation("staff")
+  isAdmin        Boolean        @default(false)
+  orders         Order[]
+  balances       Points[]
+  applications   Application[]
+  logs           LogEvent[]
+
+  @@index([id])
+}
+
+model Application {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  organization   Organization   @relation(fields: [orgId], references: [id])
+  orgId          Int
+  submitted      DateTime       @default(now())
+  status         String         @default("WAITING") // "WAITING" "ACCEPTED" "DENIED" "RESCINDED"
+
+  @@index([id])
+}
+
+model Organization {
+  id             Int            @id @default(autoincrement())
+  name           String         @db.VarChar(255) @unique
+  drivers        User[]         @relation("drivers")
+  staff          User[]         @relation("staff")
+  catalog        Catalog?
+  catalogId      Int?
+  balances       Points[]
+  applications   Application[]
+
+  @@index([id])
+}
+
+model Catalog {
+  id             Int            @id @default(autoincrement())
+  organization   Organization   @relation(fields: [orgId], references: [id])
+  orgId          Int
+  items          Item[]
+  orders         Order[]
+
+  @@index([id])
+}
+
+model Item {
+  id             Int            @id @default(autoincrement())
+  etsyId         Int            @unique
+  price          Decimal        @db.Decimal(10,2)
+  name           String         @db.VarChar(50)
+  description    String         @db.VarChar(500)
+  catalogs       Catalog[]
+  orders         Order[]
+
+  @@index([id])
+}
+
+model Order {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  catalog        Catalog        @relation(fields: [catalogId], references: [id])
+  catalogId      Int
+  placed         DateTime       @default(now())
+  status         String         @db.VarChar(10) @default("PLACED") // PLACED, CANCELLED, SHIPPED, DELIVERED
+  items          Item[]
+  event          LogEvent?
+
+  @@index([id])
+}
+
+model Points {
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  organization   Organization   @relation(fields: [orgId], references: [id])
+  orgId          Int
+  balance        Decimal        @db.Decimal(10, 2)
+
+  @@id([userId, orgId])
+}
+
+model LogEvent {
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  time           DateTime       @default(now())
+  ipAddress      String         @db.VarChar(15)
+  modelName      String?        @db.VarChar(12) // "ORGANIZATION" "POINTS" "USER" etc
+  reason         String?        @db.VarChar(255)
+  objectId       Int?           // ex: point update, this is the actual balance id
+  orgId          Int?           // ex: point update, this is the id of the org who reduced the points
+  actorId        Int?           // ex: point update, this is the id of the user who told the org to reduce points
+  transaction    Order?         @relation(fields: [transactionId], references: [id])
+  transactionId  Int?
+  accessType     String?        @db.VarChar(6) // "CREATE" "MODIFY" "DELETE"
+  oldValue       String?        @db.VarChar(255)
+  newValue       String?        @db.VarChar(255)
+
+  @@index([id])
+}

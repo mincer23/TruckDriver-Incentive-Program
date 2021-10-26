@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'cpsc4911project',
+    title: 'Team8 Rewards',
     htmlAttrs: {
       lang: 'en'
     },
@@ -12,10 +12,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      {
-        rel: 'stylesheet',
-        href: 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css'
-      }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
 
@@ -42,23 +39,12 @@ export default {
     'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxt/http',
+    'nuxt-session'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    baseURL: 'https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr'
-  },
-
-  auth: {
-    strategies:{
-      local:{
-        endpoints:{
-          user: {url: 'me', method: 'get', propertyName: 'data'}
-        }
-      }
-    }
-  },
+  axios: {},
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

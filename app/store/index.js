@@ -1,19 +1,26 @@
-export const getters = {
-    isAuthenticated(state) {
-      return state.auth.loggedIn
-    },
-    
-    loggedInUser(state) {
-      return state.auth.user
-    },
+export const state = () => ({
+  session: null,
+  displayMode: 'light'
+})
 
-    driverUser(state) {
-      return state.auth.driver
-      },
+export const mutations = {
+  setUser (state, user) {
+    state.session = user
+  },
 
-
-    adminUser(state) {
-      return state.auth.admin
+  setDisplayMode (state, mode) {
+    state.displayMode = mode
   }
 }
-  
+
+export const getters = {
+  getUser: (state) => {
+    return state.session
+  }
+}
+
+export const actions = {
+  nuxtServerInit ({ commit }, { req }) {
+    commit('setUser', req?.session?.user)
+  }
+}
