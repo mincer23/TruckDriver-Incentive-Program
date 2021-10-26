@@ -12,6 +12,15 @@
           {{ loggedInUser.email }}
         </p>
       </div>
+
+      <div class = "container">
+
+        <div class="control">
+          <button type="submit" class="button is-dark is-fullwidth">Leave Sponsor</button>
+        </div>
+
+      </div>
+
     </div>
   </section>
 </template>
@@ -20,6 +29,12 @@
 import { mapGetters } from 'vuex'
 
 export default {
+
+  // data() {
+  //   return {
+  //     sponsor: '',
+  // }
+  middleware: 'auth',
   computed: {
     ...mapGetters(['loggedInUser'])
   }

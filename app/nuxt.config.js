@@ -46,9 +46,25 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    baseURL: 'https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr'
+  },
+
+  auth: {
+    strategies:{
+      local:{
+        endpoints:{
+          user: {url: 'me', method: 'get', propertyName: 'data'}
+        }
+      }
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+
+  serverMiddleware: {
+    '/api': '~/api'
   }
 }
