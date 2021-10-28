@@ -13,6 +13,11 @@
       </div>
       <br>
       <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
+      <p class="create-account text-right mt-2 mb-4">
+        <NuxtLink to="/singupPage">
+          New? Create an account!
+        </NuxtLink>
+      </p>
       <p class="forgot-password text-right mt-2 mb-4">
         <NuxtLink to="/forgot-password">
           Forgot password?
