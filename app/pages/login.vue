@@ -1,9 +1,9 @@
 <template>
-  <div class="card text-center w-75">
+  <div class="card">
     <div class="card-body">
       <div class="login m-5">
         <form @submit="onSubmit">
-          <h1 class="card-title">Log In</h1>
+          <h1 class="card-title text-center">Log In</h1>
           <br>
           <div class="form-input">
             <label>Username</label>
@@ -21,7 +21,7 @@
               Forgot password?
             </NuxtLink>
           </div>
-          <br>
+          <p></p>
           <div class="create-account text-right">
             <NuxtLink to="/singupPage">
               New? Create an account!
@@ -68,5 +68,6 @@ export default {
 <style scoped>
 .card {
   margin: auto;
+  width: 500px;
 }
 </style>
