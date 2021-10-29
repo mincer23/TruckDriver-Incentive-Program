@@ -4,14 +4,14 @@
       <div class="columns">
         <div class="column is-4 is-offset-4">
           <h2 class="title has-text-centered">Sign Up!</h2>
-          <form method="post" @submit.prevent="register">
+          <form @submit="onSubmit">
             <div class="field">
               <label class="label">Account Level</label>
               <div class="control">
                 <input
                   type="text"
                   class="input"
-                  name="Account Level"
+                  name="account"
                   v-model="account"
                   :placeholder="'Enter a, s, or d followed by user code'"
                   required
@@ -24,8 +24,8 @@
                 <input
                   type="text"
                   class="input"
-                  name="First Name"
-                  v-model="name1"
+                  name="first"
+                  v-model="first"
                   required
                 />
              </div>
@@ -36,8 +36,8 @@
                 <input
                   type="text"
                   class="input"
-                  name="Last Name"
-                  v-model="name2"
+                  name="last"
+                  v-model="last"
                   required
                 />
              </div>
@@ -84,7 +84,7 @@
                 <input
                   type="password"
                   class="input"
-                  name="Confirm Password"
+                  name="confirm"
                   v-model="confirm"
                   required
                 />
@@ -105,45 +105,43 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import Notification from '~/components/Notification'
-
 export default {
   components: {
     Notification
   },
-  data() {
+  data () {
     return {
       account: '',
-      name1: '',
-      name2: '',
+      first: '',
+      last: '',
       email: '',
       username: '',
       password: '',
       confirm: '',
-      error: 'Check Passwords!'
+      error: 'Check Passwords!',
+      state: null
     }
   },
   methods: {
-    async register() {
-      try {
-          await this.$axios.post('signup', {
-            username: this.username,
-            email: this.email,
-            password: this.password
-          })
-
-          await this.$auth.loginWith('local', {
-            data: {
-              email: this.email,
-              password: this.password
-            }
-          })
-
-          this.$router.push('/')
-        } catch (e) {
-          this.error = e.response.data.message
-        }
+    ...mapMutations(['setUser']),
+    async onSubmit (event) {
+      event.preventDefault()
+      const data = {
+        username: this.username,
+        password: this.password
       }
+      const result = await this.$http.$post('/api/login', data)
+      this.state = !!result
+      if (result) {
+        console.log(result)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      }
+    }
   }
 
 }

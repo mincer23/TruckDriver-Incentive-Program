@@ -14,7 +14,7 @@
       <br>
       <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
       <p class="create-account text-right mt-2 mb-4">
-        <NuxtLink to="/singupPage">
+        <NuxtLink to="/signupPage">
           New? Create an account!
         </NuxtLink>
       </p>

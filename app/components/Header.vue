@@ -12,6 +12,14 @@
       <b-nav-item to="/sponsors">
         Organizations
       </b-nav-item>
+      <!-- temporary -->
+      <b-nav-item to="/profilePage">
+        Profile
+      </b-nav-item>
+      <!-- temporary -->
+      <b-nav-item to="/signupPage">
+        Sign Up
+      </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item-dropdown v-if="getUser" right>

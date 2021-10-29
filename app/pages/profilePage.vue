@@ -5,11 +5,11 @@
       <div class="content">
         <p>
           <strong>Username:</strong>
-          {{ loggedInUser.username }}
+          {{ userData.username }}
         </p>
         <p>
           <strong>Email:</strong>
-          {{ loggedInUser.email }}
+          {{ userData.email }}
         </p>
       </div>
 
@@ -26,17 +26,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import { mapMutations } from 'vuex'
 export default {
 
-  // data() {
-  //   return {
-  //     sponsor: '',
-  // }
-  middleware: 'auth',
-  computed: {
-    ...mapGetters(['loggedInUser'])
+  data () {
+    return {
+      sponsor: '',
+      state: null
+    }
+  },
+
+  // middleware: 'auth',
+  methods: {
+    ...mapMutations(['setUser'])
   }
 }
 </script>
