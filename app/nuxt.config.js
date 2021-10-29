@@ -1,14 +1,14 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Team8 Rewards',
+    title: 'Driver Incentive Program',
     htmlAttrs: {
       lang: 'en'
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      { hid: 'description', name: 'description', content: 'Drive safely, earn points, buy stuff!' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
@@ -43,6 +43,10 @@ export default {
     'nuxt-session'
   ],
 
+  bootstrapVue: {
+    icons: true
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
 
@@ -50,7 +54,17 @@ export default {
   build: {
   },
 
-  serverMiddleware: {
-    '/api': '~/api'
+  serverMiddleware: [
+    '~/api/index.js',
+    '~/api/auth.js'
+  ],
+
+  server: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+
+  http: {
+    browserBaseUrl: '/'
   }
 }

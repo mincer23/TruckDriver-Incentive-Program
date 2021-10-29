@@ -22,6 +22,10 @@ app.use('/users', userRoutes)
 app.use('/catalogs', catalogRoutes)
 app.use('/organizations', organizationRoutes)
 
+app.get('/test', (req, res) => {
+  res.json(req.session)
+})
+
 // There are a few root-level routes we need to take care of
 app.get('/logout', (req, res) => {
   req.session.destroy()
@@ -48,6 +52,7 @@ app.post('/login', async (req, res) => {
     if (userData) { // prisma returns null on no object found
       if (comparePassword(req.body.password, userData.passwordHash)) {
         delete userData.passwordHash // dont put the password in the session obj
+        req.session.user = userData
         res.json(userData)
       } else { // bad password
         res.sendStatus(400)
