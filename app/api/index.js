@@ -22,10 +22,6 @@ app.use('/users', userRoutes)
 app.use('/catalogs', catalogRoutes)
 app.use('/organizations', organizationRoutes)
 
-app.get('/test', (req, res) => {
-  res.json(req.session)
-})
-
 // There are a few root-level routes we need to take care of
 app.get('/logout', (req, res) => {
   req.session.destroy()
@@ -50,7 +46,7 @@ app.post('/login', async (req, res) => {
       }
     })
     if (userData) { // prisma returns null on no object found
-      if (comparePassword(req.body.password, userData.passwordHash)) {
+      if (await comparePassword(req.body.password, userData.passwordHash)) {
         delete userData.passwordHash // dont put the password in the session obj
         req.session.user = userData
         res.json(userData)
@@ -64,9 +60,10 @@ app.post('/login', async (req, res) => {
 })
 
 // https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
-const comparePassword = async (password, hash) => {
+async function comparePassword(password, hash) {
   try {
-    return await bcrypt.compare(password, hash)
+    const result = await bcrypt.compare(password, hash)
+    return result
   } catch (error) {
     console.log(error)
   }

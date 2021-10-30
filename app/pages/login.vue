@@ -7,12 +7,12 @@
           <br>
           <div class="form-input">
             <label>Username</label>
-            <input v-model="userName" name="username" type="text" class="form-control form-control-lg">
+            <input v-model="userName" name="username" type="text" class="form-control form-control-lg" required>
           </div>
           <br>
           <div class="form-input">
             <label>Password</label>
-            <input v-model="password" name="password" type="password" class="form-control form-control-lg">
+            <input v-model="password" name="password" type="password" class="form-control form-control-lg" required>
           </div>
           <br>
           <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
@@ -52,14 +52,14 @@ export default {
         username: this.userName,
         password: this.password
       }
-      const result = await this.$http.$post('/api/login', data)
-      this.state = !!result
-      if (result) {
-        console.log(result)
+      try {
+        const result = await this.$http.$post('/api/login', data)
         this.setUser(result)
         this.$nextTick(() => {
           this.$router.push('/')
         })
+      } catch {
+        this.state = false
       }
     }
   }
