@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h2 class="title">My Profile</h2>
+      <h2 class="title">Applications</h2>
       <div class="content">
         <p>
           <strong>Username:</strong>
@@ -15,14 +15,11 @@
           <strong>Organization:</strong>
           {{ getUser.sponsor }}
         </p>
-      </div>
 
-      <div class = "container">
-
-        <div class="control">
-          <button type="submit" class="button is-dark is-fullwidth">Leave Sponsor</button>
-        </div>
-
+         <p>
+          <strong>Status:</strong>
+          {{ getUser.Status }}
+        </p>
       </div>
 
     </div>
@@ -33,14 +30,6 @@
 import { mapMutations } from 'vuex'
 export default {
 
-  // data () {
-  //   return {
-  //     sponsor: '',
-  //     state: null
-  //   }
-  // },
-
-  // middleware: 'auth',
   methods: {
     ...mapMutations(['getUser'])
   }
