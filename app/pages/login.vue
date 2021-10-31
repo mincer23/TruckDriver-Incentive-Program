@@ -1,5 +1,5 @@
 <template>
-  <div class="card text-center w-75">
+  <div class="card">
     <div class="card-body">
       <div class="login m-5">
         <form @submit="onSubmit">
@@ -52,6 +52,7 @@
 <script>
 import { mapMutations } from 'vuex'
 export default {
+  layout: 'signedout',
   data () {
     return {
       userName: null,
@@ -67,14 +68,14 @@ export default {
         username: this.userName,
         password: this.password
       }
-      const result = await this.$http.$post('/api/login', data)
-      this.state = !!result
-      if (result) {
-        console.log(result)
+      try {
+        const result = await this.$http.$post('/api/login', data)
         this.setUser(result)
         this.$nextTick(() => {
           this.$router.push('/')
         })
+      } catch {
+        this.state = false
       }
     }
   }
@@ -84,5 +85,6 @@ export default {
 <style scoped>
 .card {
   margin: auto;
+  width: 500px;
 }
 </style>

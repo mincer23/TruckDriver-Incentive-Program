@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header page-title="Driver Dashboard" />
     <div v-if="getUser">
       <SplashContainer
         :first-name="getUser.firstName"
@@ -9,6 +10,7 @@
       />
     </div>
     <div v-else>
+      <!-- TODO: Add some cool splash screen for non-logged in folks! -->
       <span>Please <b-button to="/login" variant="primary">Login</b-button> to view this page.</span>
     </div>
   </div>

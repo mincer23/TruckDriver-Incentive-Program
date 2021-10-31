@@ -1,15 +1,19 @@
 <template>
-  <div class="forgot-password">
-    <form method="post">
-      <h1>Forgot Password</h1>
-      <p></p>
-      <div class="email">
-        <label>Please enter the email for your account</label>
-        <input v-model="email" type="email" class="form-control" placeholder="you@example.com..." required>
-      </div>
-      <p></p>
-      <button type="submit" class="btn btn-primary btn-lg btn-square">Submit</button>
-    </form>
+  <div class="card">
+    <div class="card-body">
+      <br>
+      <h1 class="card-title text-center">Forgot Password</h1>
+      <form method="post">
+        <br>
+        <div class="email">
+          <label>Please enter the email for your account</label>
+          <input v-model="email" type="email" class="form-control" placeholder="you@example.com..." required>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary btn-lg btn-square">Submit</button>
+        <br>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -33,5 +37,8 @@ export default {
 </script>
 
 <style scoped>
-
+.card {
+  margin: auto;
+  width: 500px;
+}
 </style>
