@@ -59,6 +59,34 @@ app.post('/login', async (req, res) => {
   }
 })
 
+app.post('/updateStatus', async (req, res) => {
+
+  if (!req?.body?.username) {
+    res.sendStatus(400) 
+  } else {
+    const userData = await prisma.user.findUnique({
+      where: {
+        userName: req.body.username
+      },
+      include: {
+        driverFor: true,
+        staffFor: true,
+        orders: true,
+        balances: true
+      }
+    })
+
+    if (userData) { 
+        req.session.user = userData
+        res.json(userData)
+    }
+  }
+
+
+})
+
+
+
 // https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
 async function comparePassword(password, hash) {
   try {

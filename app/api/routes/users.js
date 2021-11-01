@@ -19,7 +19,8 @@ router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
         lastName: true,
         driverFor: true,
         staffFor: true,
-        isAdmin: true
+        isAdmin: true,
+        status: true
       }
     })
     if (userData) {

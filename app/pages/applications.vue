@@ -5,21 +5,17 @@
       <div class="content">
         <p>
           <strong>Username:</strong>
-          {{ getUser.username }}
+          {{ data.username }}
         </p>
         <p>
           <strong>Email:</strong>
-          {{ getUser.email }}
+          {{ data.email }}
         </p>
         <p>
           <strong>Organization:</strong>
-          {{ getUser.sponsor }}
+          {{ data.sponsor }}
         </p>
 
-         <p>
-          <strong>Status:</strong>
-          {{ getUser.Status }}
-        </p>
       </div>
 
     </div>
@@ -27,11 +23,18 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+
 export default {
 
-  methods: {
-    ...mapMutations(['getUser'])
+  data () {
+    return {
+      data: ''
+    }
+  },
+
+  async fetch () {
+    this.data = await this.router.get('/profile/:id')
   }
+
 }
 </script>

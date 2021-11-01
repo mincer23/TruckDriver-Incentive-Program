@@ -6,32 +6,24 @@
       <div class="content">
         <p>
           <strong>Username:</strong>
-          {{ getUser.username }}
+          {{ userData.username }}
         </p>
         <p>
           <strong>Email:</strong>
-          {{ getUser.email }}
+          {{ userData.email }}
         </p>
       </div>
 
     <form @submit="onAccept">
-        <div class = "container">
-
             <div class="control">
-            <button type="submit" class="button is-dark is-fullwidth">Accept Account</button>
+              <button type="submit" class="button is-dark is-fullwidth">Accept User </button>
             </div>
-
-        </div>
     </form>
 
     <form @submit="onDeny">
-        <div class = "container">
-
             <div class="control">
-            <button type="submit" class="button is-dark is-fullwidth">Decline Account</button>
+              <button type="submit" class="button is-dark is-fullwidth">Deny User</button>
             </div>
-
-        </div>
     </form>
 
     </div>
@@ -41,25 +33,53 @@
 <script>
 import { mapMutations } from 'vuex'
 export default {
+  data () {
+    return {
+      data: '',
+      username: '',
+      email: '',
+      state: ''
+    }
+  },
 
   methods: {
     ...mapMutations(['setUser']),
-    async onSubmit (event) {
+    async onDeny (event) {
       event.preventDefault()
       const data = {
-        username: this.userName,
-        password: this.password
+        username: this.username,
+        status: false
       }
-      const result = await this.$http.$post('/api/login', data)
-      this.state = !!result
-      if (result) {
-        console.log(result)
+      try {
+        const result = await this.$http.$post('/api/updatestatus', data)
         this.setUser(result)
         this.$nextTick(() => {
           this.$router.push('/')
         })
+      } catch {
+        this.state = false
+      }
+    },
+    async onAccept (event) {
+      event.preventDefault()
+      const data = {
+        username: this.username,
+        status: true
+      }
+      try {
+        const result = await this.$http.$post('/api/updatestatus', data)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      } catch {
+        this.state = false
       }
     }
+  },
+
+  async fetch () {
+    this.data = await this.$http.$get('/profile/:id')
   }
 
 }

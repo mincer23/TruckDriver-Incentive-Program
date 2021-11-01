@@ -29,22 +29,6 @@
             </div>
           </form>
         </div>
-        <div class="form-input">
-          <label>Password</label>
-          <input v-model="password" name="password" type="password" class="form-control form-control-lg">
-        </div>
-        <br>
-        <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
-        <p class="create-account text-right mt-2 mb-4">
-          <NuxtLink to="/signupPage">
-            New? Create an account!
-          </NuxtLink>
-        </p>
-        <p class="forgot-password text-right mt-2 mb-4">
-          <NuxtLink to="/forgot-password">
-            Forgot password?
-          </NuxtLink>
-        </p>
   </div>
   </div>
 </template>

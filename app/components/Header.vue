@@ -18,6 +18,9 @@
       <b-nav-item to="/signupPage">
         Sign Up
       </b-nav-item>
+      <b-nav-item to="/applications">
+        Applications
+      </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item-dropdown v-if="getUser" right>
