@@ -16,13 +16,13 @@
 
     <form @submit="onAccept">
             <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Accept User </button>
+              <button type="submit" class="btn btn-primary btn-lg btn-square">Accept User </button>
             </div>
     </form>
 
     <form @submit="onDeny">
             <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Deny User</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-square">Deny User</button>
             </div>
     </form>
 

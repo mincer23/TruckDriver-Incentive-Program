@@ -20,7 +20,7 @@
       <div class = "container">
 
         <div class="control">
-          <button type="submit" class="button is-dark is-fullwidth">Leave Sponsor</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-square">Leave Sponsor</button>
         </div>
 
       </div>

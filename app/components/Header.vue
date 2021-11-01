@@ -14,10 +14,6 @@
       <b-nav-item to="/profilePage">
         Profile
       </b-nav-item>
-      <!-- temporary -->
-      <b-nav-item to="/signupPage">
-        Sign Up
-      </b-nav-item>
       <b-nav-item to="/applications">
         Applications
       </b-nav-item>

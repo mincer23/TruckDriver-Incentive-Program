@@ -23,7 +23,7 @@
     </b-container>
     <div class = "container">
         <input type="text" v-model = "title">
-        <button type="submit" class="button is-dark is-fullwidth">Add to Cart</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-square">Add to Cart</button>
     </div>
     </section>
 </template>
