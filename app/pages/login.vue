@@ -3,33 +3,36 @@
     <div class="card-body">
       <div class="login m-5">
         <form @submit="onSubmit">
-            <h1 class="card-title">Log In</h1>
-            <br>
-            <div class="form-input">
-              <label>Username</label>
-              <input v-model="userName" name="username" type="text" class="form-control form-control-lg">
-            </div>
-            <br>
-            <div class="form-input">
-              <label>Password</label>
-              <input v-model="password" name="password" type="password" class="form-control form-control-lg">
-            </div>
-            <br>
-            <button type="submit" class="btn btn-primary btn-lg btn-square">Sign In</button>
-            <div class="forgot-password text-right">
-              <NuxtLink to="/forgot-password">
-                Forgot password?
-              </NuxtLink>
-            </div>
-            <br>
-            <div class="create-account text-right">
-              <NuxtLink to="/signupPage">
-                New? Create an account!
-              </NuxtLink>
-            </div>
-          </form>
-        </div>
-  </div>
+          <h3 class="card-subtitle mb-2 text-muted" style="text-align:center">Driver Incentive Program</h3>
+          <br><br>
+          <h1 class="card-title" style="text-align: center">Log In</h1>
+          <h6 class="card-subtitle mb-2 text-muted" style="text-align: center">Enter your username and password</h6>
+          <br>
+          <div class="form-input">
+            <label>Username</label>
+            <input v-model="userName" name="username" type="text" class="form-control form-control-lg">
+          </div>
+          <br>
+          <div class="form-input">
+            <label>Password</label>
+            <input v-model="password" name="password" type="password" class="form-control form-control-lg">
+          </div>
+          <br>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
+          <br><br>
+          <div class="forgot-password text-center">
+            <NuxtLink to="/forgot-password">
+              Forgot password?
+            </NuxtLink>
+          </div>
+          <div class="create-account text-center">
+            <NuxtLink to="/signupPage">
+              New? Create an account!
+            </NuxtLink>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
