@@ -75,7 +75,9 @@
                   :placeholder="'Enter your password'"
                   required
                 />
-                <Password v-model="password" :strengthMeterOnly="true" />
+                <client-only>
+                  <Password v-model="password" :strengthMeterOnly="true" />
+                </client-only>
             </div>
             <br>
              <div class="form-input">

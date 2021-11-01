@@ -15,7 +15,9 @@
                   v-model="password"
                   required
                 />
-                <Password v-model="password" :strengthMeterOnly="true"/>
+                <client-only>
+                  <Password v-model="password" :strengthMeterOnly="true"/>
+                </client-only>
               </div>
             </div>
              <div class="field">
