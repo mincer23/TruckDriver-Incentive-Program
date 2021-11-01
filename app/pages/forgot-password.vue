@@ -18,14 +18,15 @@
 </template>
 
 <script>
-/* import { mapMutations } from 'vuex'
+//  import { mapMutations } from 'vuex'
 export default {
+  layout: 'signedout',
   data () {
     return {
       email: null
     }
-  },
-  methods: {
+  }// ,
+/*  methods: {
     ...
     async onSumbit(event) {
       event.preventDefault()
@@ -33,7 +34,8 @@ export default {
         email: this.email
       }
       const result = await this.$http.$post('/api/', data)
-  } */
+    } */
+}
 </script>
 
 <style scoped>
