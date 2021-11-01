@@ -75,6 +75,7 @@
                   :placeholder="'Enter your password'"
                   required
                 />
+                <Password v-model="password" :strengthMeterOnly="true" />
             </div>
             <br>
              <div class="form-input">
@@ -101,10 +102,13 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
+
 export default {
   components: {
-    Notification
+    Notification,
+    Password
   },
   data () {
     return {

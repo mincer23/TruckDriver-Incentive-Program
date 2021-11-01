@@ -15,6 +15,7 @@
                   v-model="password"
                   required
                 />
+                <Password v-model="password" :strengthMeterOnly="true"/>
               </div>
             </div>
              <div class="field">
@@ -41,13 +42,15 @@
 </template>
 
 <script>
+import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
 
 export default {
   components: {
-    Notification
+    Notification,
+    Password
   },
-  data() {
+  data () {
     return {
       password: '',
       confirm: '',
@@ -55,28 +58,27 @@ export default {
     }
   },
   methods: {
-    async register() {
+    async register () {
       try {
-          await this.$axios.post('signup', {
-            username: this.username,
+        await this.$axios.post('signup', {
+          username: this.username,
+          email: this.email,
+          password: this.password
+        })
+
+        await this.$auth.loginWith('local', {
+          data: {
             email: this.email,
             password: this.password
-          })
+          }
+        })
 
-          await this.$auth.loginWith('local', {
-            data: {
-              email: this.email,
-              password: this.password
-            }
-          })
-
-          this.$router.push('/')
-        } catch (e) {
-          this.error = e.response.data.message
-        }
+        this.$router.push('/')
+      } catch (e) {
+        this.error = e.response.data.message
       }
+    }
   }
-
 }
 
 </script>
