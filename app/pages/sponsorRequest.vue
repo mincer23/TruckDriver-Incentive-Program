@@ -10,7 +10,7 @@
                           <input
                               type="text"
                               class="input"
-                              name="Sponsor"
+                              name="sponsor"
                               v-model="sponsor"
                               required
                           />
@@ -22,10 +22,33 @@
           </div>
         </div>
       </div>
-   
   </section>
 </template>
 <script>
+import { mapMutations } from 'vuex'
 export default {
+  data () {
+    return {
+      sponsor: ''
+    }
+  },
+  methods: {
+    ...mapMutations(['setUser']),
+    async onSubmit (event) {
+      event.preventDefault()
+      const data = {
+        sponsor: this.sponsor
+      }
+      const result = await this.$http.$post('/api/login', data)
+      this.state = !!result
+      if (result) {
+        console.log(result)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      }
+    }
+  }
 }
 </script>

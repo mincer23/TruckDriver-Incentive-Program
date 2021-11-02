@@ -46,8 +46,9 @@ app.post('/login', async (req, res) => {
       }
     })
     if (userData) { // prisma returns null on no object found
-      if (comparePassword(req.body.password, userData.passwordHash)) {
+      if (await comparePassword(req.body.password, userData.passwordHash)) {
         delete userData.passwordHash // dont put the password in the session obj
+        req.session.user = userData
         res.json(userData)
       } else { // bad password
         res.sendStatus(400)
@@ -58,10 +59,39 @@ app.post('/login', async (req, res) => {
   }
 })
 
+app.post('/updateStatus', async (req, res) => {
+
+  if (!req?.body?.username) {
+    res.sendStatus(400) 
+  } else {
+    const userData = await prisma.user.findUnique({
+      where: {
+        userName: req.body.username
+      },
+      include: {
+        driverFor: true,
+        staffFor: true,
+        orders: true,
+        balances: true
+      }
+    })
+
+    if (userData) { 
+        req.session.user = userData
+        res.json(userData)
+    }
+  }
+
+
+})
+
+
+
 // https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
-const comparePassword = async (password, hash) => {
+async function comparePassword(password, hash) {
   try {
-    return await bcrypt.compare(password, hash)
+    const result = await bcrypt.compare(password, hash)
+    return result
   } catch (error) {
     console.log(error)
   }

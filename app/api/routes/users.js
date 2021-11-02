@@ -1,8 +1,9 @@
 import { prisma } from '../prisma.js'
+import { ensureAuthenticated } from '../utilities.js'
 const express = require('express')
 const router = express.Router()
 
-router.get('/profile/:id', async (req, res) => {
+router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   let userData = null
   if (req.params.id) { // get the profile they asked for
     userData = await prisma.user.findUnique({
@@ -18,7 +19,8 @@ router.get('/profile/:id', async (req, res) => {
         lastName: true,
         driverFor: true,
         staffFor: true,
-        isAdmin: true
+        isAdmin: true,
+        status: true
       }
     })
     if (userData) {

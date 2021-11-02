@@ -5,18 +5,22 @@
       <div class="content">
         <p>
           <strong>Username:</strong>
-          {{ loggedInUser.username }}
+          {{ getUser.username }}
         </p>
         <p>
           <strong>Email:</strong>
-          {{ loggedInUser.email }}
+          {{ getUser.email }}
+        </p>
+        <p>
+          <strong>Organization:</strong>
+          {{ getUser.sponsor }}
         </p>
       </div>
 
       <div class = "container">
 
         <div class="control">
-          <button type="submit" class="button is-dark is-fullwidth">Leave Sponsor</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-square">Leave Sponsor</button>
         </div>
 
       </div>
@@ -26,17 +30,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import { mapMutations } from 'vuex'
 export default {
 
-  // data() {
+  // data () {
   //   return {
   //     sponsor: '',
-  // }
-  middleware: 'auth',
-  computed: {
-    ...mapGetters(['loggedInUser'])
+  //     state: null
+  //   }
+  // },
+
+  // middleware: 'auth',
+  methods: {
+    ...mapMutations(['getUser'])
   }
 }
 </script>

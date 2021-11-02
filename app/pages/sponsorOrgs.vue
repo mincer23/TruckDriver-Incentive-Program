@@ -4,23 +4,30 @@
       <div class="columns">
         <div class="column is-4 is-offset-4">
           <h2 class="title has-text-centered">Sponsor Organizations</h2>
-            <div class = "content" v-if="isAuthenticated && state.auth.user == sponsor">
-       
+            <div class = "content">
+              <p>
+                <strong>Sponsor:</strong>
+                {{ user.sponsor }}
+              </p>
             </div>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-
 <script>
-import { mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
-  middleware: 'sponsor',
-  computed: {
-    ...mapGetters(['loggedInUser'])
+  data () {
+    return {
+      sponsor: '',
+      state: null
+    }
+  },
+  methods: {
+    ...mapMutations(['setUser'])
   }
+
 }
 </script>

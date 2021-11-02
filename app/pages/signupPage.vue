@@ -1,149 +1,148 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-4 is-offset-4">
-          <h2 class="title has-text-centered">Sign Up!</h2>
-          <form method="post" @submit.prevent="register">
-            <div class="field">
-              <label class="label">Account Level</label>
-              <div class="control">
+  <div class="card">
+    <div class="card-body">
+      <div class="signup m-5">
+          <form @submit="onSubmit">
+              <h1 class="card-title">Log In</h1>
+              <br>
+              <div class="form-input">
+                <label class="label">Account Level</label>
                 <input
                   type="text"
-                  class="input"
-                  name="Account Level"
+                  class="form-control form-control-lg"
+                  name="account"
                   v-model="account"
                   :placeholder="'Enter a, s, or d followed by user code'"
                   required
                 />
              </div>
-            </div>
-            <div class="field">
+             <br>
+            <div class="form-input">
               <label class="label">First Name</label>
-              <div class="control">
                 <input
                   type="text"
-                  class="input"
-                  name="First Name"
-                  v-model="name1"
+                  class="form-control form-control-lg"
+                  name="first"
+                  v-model="first"
+                  :placeholder="'Johnny'"
                   required
                 />
-             </div>
             </div>
-            <div class="field">
+            <br>
+            <div class="form-input">
               <label class="label">Last Name</label>
-              <div class="control">
                 <input
                   type="text"
-                  class="input"
-                  name="Last Name"
-                  v-model="name2"
+                  class="form-control form-control-lg"
+                  name="last"
+                  v-model="last"
+                  :placeholder="'Appleseed'"
                   required
                 />
-             </div>
             </div>
-            <div class="field">
+            <br>
+            <div class="form-input">
               <label class="label">Email</label>
-              <div class="control">
                 <input
                   type="email"
-                  class="input"
+                  class="form-control form-control-lg"
                   name="email"
                   v-model="email"
+                  :placeholder="'jappseed@gmail.com'"
                   required
                 />
-             </div>
             </div>
-            <div class="field">
+            <br>
+            <div class="form-input">
               <label class="label">Username</label>
-              <div class="control">
                 <input
                   type="text"
-                  class="input"
+                  class="form-control form-control-lg"
                   name="username"
                   v-model="username"
+                  :placeholder="'jonapple123'"
                   required
                 />
-              </div>
             </div>
-            <div class="field">
+            <br>
+            <div class="form-input">
               <label class="label">Password</label>
-              <div class="control">
                 <input
                   type="password"
-                  class="input"
+                  class="form-control form-control-lg"
                   name="password"
                   v-model="password"
+                  :placeholder="'Enter your password'"
                   required
                 />
-              </div>
+                <client-only>
+                  <Password v-model="password" :strengthMeterOnly="true" />
+                </client-only>
             </div>
-             <div class="field">
+            <br>
+             <div class="form-input">
               <label class="label">Confirm Password</label>
-              <div class="control">
                 <input
                   type="password"
-                  class="input"
-                  name="Confirm Password"
+                  class="form-control form-control-lg"
+                  name="confirm"
                   v-model="confirm"
+                  :placeholder="'Retype your Password'"
                   required
                 />
-              </div>
             </div>
+            <br>
             <Notification :message="error" v-if="password!=confirm"/>
             <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Register</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-square">Register</button>
             </div>
           </form>
-          <div class="has-text-centered" style="margin-top: 20px">
-            Already got an account? <nuxt-link to="/login">Login</nuxt-link>
-          </div>
         </div>
       </div>
     </div>
-  </section>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
 
 export default {
   components: {
-    Notification
+    Notification,
+    Password
   },
-  data() {
+  data () {
     return {
       account: '',
-      name1: '',
-      name2: '',
+      first: '',
+      last: '',
       email: '',
       username: '',
       password: '',
       confirm: '',
-      error: 'Check Passwords!'
+      error: 'Check Passwords!',
+      state: null
     }
   },
   methods: {
-    async register() {
-      try {
-          await this.$axios.post('signup', {
-            username: this.username,
-            email: this.email,
-            password: this.password
-          })
-
-          await this.$auth.loginWith('local', {
-            data: {
-              email: this.email,
-              password: this.password
-            }
-          })
-
-          this.$router.push('/')
-        } catch (e) {
-          this.error = e.response.data.message
-        }
+    ...mapMutations(['setUser']),
+    async onSubmit (event) {
+      event.preventDefault()
+      const data = {
+        username: this.username,
+        password: this.password
       }
+      const result = await this.$http.$post('/api/login', data)
+      this.state = !!result
+      if (result) {
+        console.log(result)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      }
+    }
   }
 
 }
