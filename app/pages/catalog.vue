@@ -1,5 +1,6 @@
 <template>
     <section class = "section">
+     <h1 class="card-title">Catalog</h1>
     <b-container v-if="data">
         <b-row>
         <b-col v-for="item in data.results" :key="item.listing_id" cols="12">
@@ -22,8 +23,7 @@
         </b-row>
     </b-container>
     <div class = "container">
-        <input type="text" v-model = "title">
-        <button type="submit" class="btn btn-primary btn-lg btn-square">Add to Cart</button>
+        <button v-on:click="addCart(item)" class="btn btn-primary btn-lg btn-square">Add to Cart</button>
     </div>
     </section>
 </template>
@@ -35,6 +35,11 @@ export default {
       data: null,
       testimage: null,
       title: null
+    }
+  },
+  mehtods: {
+    addCart (item) {
+      this.$emit('update-cart', item)
     }
   },
   async fetch () {

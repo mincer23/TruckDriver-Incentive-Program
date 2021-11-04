@@ -34,6 +34,7 @@ export default {
 
   async fetch () {
     this.data = await this.router.get('/profile/:id')
+    ensureSponsor
   }
 
 }
