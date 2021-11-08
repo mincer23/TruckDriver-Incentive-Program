@@ -60,9 +60,8 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/updateStatus', async (req, res) => {
-
   if (!req?.body?.username) {
-    res.sendStatus(400) 
+    res.sendStatus(400)
   } else {
     const userData = await prisma.user.findUnique({
       where: {
@@ -76,23 +75,24 @@ app.post('/updateStatus', async (req, res) => {
       }
     })
 
-    if (userData) { 
-        req.session.user = userData
-        res.json(userData)
+    if (userData) {
+      req.session.user = userData
+      res.json(userData)
     }
   }
-
-
 })
 
-
+app.get('/session', (req, res) => {
+  res.json(req.session.user)
+})
 
 // https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
-async function comparePassword(password, hash) {
+async function comparePassword (password, hash) {
   try {
     const result = await bcrypt.compare(password, hash)
     return result
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error)
   }
   return false
