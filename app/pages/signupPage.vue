@@ -108,6 +108,8 @@ import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
 
 export default {
+  layout: "signedout",
+  
   components: {
     Notification,
     Password

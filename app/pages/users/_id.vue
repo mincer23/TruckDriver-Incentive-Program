@@ -17,7 +17,7 @@
                 </b-col>
                 <b-col cols="8">
                   <h2>{{ userData.firstName }} {{ userData.lastName }}</h2>
-                  <h6 v-for="sponsor in userData.sponsors" :key="sponsor.id">
+                  <h6 v-for="sponsor in userData.driverFor" :key="sponsor.id">
                     Driver for <NuxtLink :to="'/sponsor/' + sponsor.id" class="text-dark">
                       {{ sponsor.name }}
                     </NuxtLink>

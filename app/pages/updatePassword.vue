@@ -62,15 +62,15 @@ export default {
   methods: {
     async register () {
       try {
-        await this.$axios.post('signup', {
+        await this.$http.post('/api/user', {
           username: this.username,
           email: this.email,
           password: this.password
         })
 
-        await this.$auth.loginWith('local', {
+        await this.$http.post('/api/login', {
           data: {
-            email: this.email,
+            username: this.username,
             password: this.password
           }
         })

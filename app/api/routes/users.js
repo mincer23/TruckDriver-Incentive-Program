@@ -3,6 +3,8 @@ import { ensureAuthenticated } from '../utilities.js'
 const express = require('express')
 const router = express.Router()
 
+router.post('/')
+
 router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   let userData = null
   if (req.params.id) { // get the profile they asked for
@@ -19,8 +21,7 @@ router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
         lastName: true,
         driverFor: true,
         staffFor: true,
-        isAdmin: true,
-        status: true
+        isAdmin: true
       }
     })
     if (userData) {
