@@ -1,11 +1,95 @@
 import { prisma } from '../prisma.js'
 import { ensureAuthenticated, isPasswordStrong } from '../utilities.js'
+const zxcvbn = require('zxcvbn')
 const bcrypt = require('bcrypt')
 const express = require('express')
 
 const router = express.Router()
 
-router.post('/')
+router.post('/', async (req, res) => {
+  const userName = req.body?.userName
+  const password = req.body?.password
+  const email = req.body?.email
+  const firstName = req.body?.firstName
+  const lastName = req.body?.lastName
+  // do we have all required fields
+  if (!(userName && password && email && firstName && lastName)) {
+    res.status(400)
+  }
+  // is the password strong enough
+  if (!isPasswordStrong(password)) {
+    res.status(400)
+  }
+  // does username or email already exist
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      OR: [
+        { userName },
+        { email }
+      ]
+    }
+  })
+  // yes
+  if (existingUser) {
+    res.status(400)
+  }
+  // no
+  const newUser = await prisma.user.create({
+    data: {
+      userName,
+      passwordHash: await bcrypt.hash(password),
+      email,
+      firstName,
+      lastName
+    }
+  })
+  if (newUser) { // create query was successful
+    res.status(200)
+  } else { // something broke on our end
+    res.status(500)
+  }
+})
+
+router.put('/:id', ensureAuthenticated, async (req, res) => {
+  // only allow admins or the user in question to update a user
+  if (Number(req.params.id) !== req.session.user.id && !req.session.user.isAdmin) {
+    res.status(400)
+  }
+  const existingData = await prisma.user.findUnique({
+    where: {
+      id: Number(req.params.id)
+    }
+  })
+  // if user not found
+  if (!existingData) {
+    res.status(400)
+  }
+  // let's only take the data we want to update
+  const userName = req.body?.userName || existingData.userName
+  const passwordHash = zxcvbn(req.body?.password).score > 2 ? await bcrypt.hash(req.body.password) : existingData.passwordHash
+  const email = req.body?.email || existingData.email
+  const firstName = req.body?.firstName || existingData.firstName
+  const lastName = req.body?.lastName || existingData.firstName
+
+  // update the user
+  const result = await prisma.user.update({
+    where: {
+      id: Number(req.params.id)
+    },
+    data: {
+      userName,
+      passwordHash,
+      email,
+      firstName,
+      lastName
+    }
+  })
+  if (result) {
+    res.status(200)
+  } else { // something broke on our end
+    res.status(500)
+  }
+})
 
 router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   let userData = null
