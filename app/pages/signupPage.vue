@@ -23,7 +23,7 @@
                   type="text"
                   class="form-control form-control-lg"
                   name="first"
-                  v-model="first"
+                  v-model="firstName"
                   :placeholder="'Johnny'"
                   required
                 />
@@ -35,7 +35,7 @@
                   type="text"
                   class="form-control form-control-lg"
                   name="last"
-                  v-model="last"
+                  v-model="lastName"
                   :placeholder="'Appleseed'"
                   required
                 />
@@ -59,7 +59,7 @@
                   type="text"
                   class="form-control form-control-lg"
                   name="username"
-                  v-model="username"
+                  v-model="userName"
                   :placeholder="'jonapple123'"
                   required
                 />
@@ -92,9 +92,20 @@
                 />
             </div>
             <br>
+            <div>
+              <b-form-checkbox
+                v-model="terms"
+                value="accepted"
+                unchecked-value="not_accepted"
+                required
+              >
+              I accept the <NuxtLink to="/termsofservice.html">Terms of Service</NuxtLink> and <NuxtLink to="/privacypolicy.html">Privacy Policy</NuxtLink>
+              </b-form-checkbox>
+            </div>
+            <br>
             <Notification :message="error" v-if="password!=confirm"/>
             <div class="control">
-              <button type="submit" class="btn btn-primary btn-lg btn-square">Register</button>
+              <button :disabled="terms==='not_accepted'" type="submit" class="btn btn-primary btn-lg btn-square">Register</button>
             </div>
           </form>
         </div>
@@ -108,8 +119,7 @@ import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
 
 export default {
-  layout: "signedout",
-  
+  layout: 'signedout',
   components: {
     Notification,
     Password
@@ -117,25 +127,30 @@ export default {
   data () {
     return {
       account: '',
-      first: '',
-      last: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      username: '',
+      userName: '',
       password: '',
       confirm: '',
       error: 'Check Passwords!',
-      state: null
+      state: null,
+      terms: 'not_accepted'
     }
   },
   methods: {
     ...mapMutations(['setUser']),
     async onSubmit (event) {
       event.preventDefault()
+      console.log(this.terms)
       const data = {
-        username: this.username,
-        password: this.password
+        userName: this.userName,
+        password: this.password,
+        email: this.email,
+        firstName: this.firstName,
+        lastName: this.lastName
       }
-      const result = await this.$http.$post('/api/login', data)
+      const result = await this.$http.$post('/api/users', data)
       this.state = !!result
       if (result) {
         console.log(result)
