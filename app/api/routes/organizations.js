@@ -1,16 +1,27 @@
 import validator from 'validator'
 import { prisma } from '../prisma.js'
+import { ensureAuthenticated } from '../utilities.js'
 const express = require('express')
 const router = express.Router()
 
 // get all organizations (used for search/browsing)
-router.get('/list', async (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
   const result = await prisma.organization.findMany()
   res.json(result)
 })
 
+// get specific organization info
+router.get('/:id', ensureAuthenticated, async (req, res) => {
+  const result = await prisma.organization.findUnique({
+    where: {
+      id: Number(req.params.id)
+    }
+  })
+  res.json(result)
+})
+
 // create new organization (this must be done by a currently signed in user)
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
   // check for required fields
   if (req?.body?.name) {
     // check db for existing orgs
@@ -25,7 +36,12 @@ router.post('/', async (req, res) => {
       // create org with all bindings
       const result = await prisma.organization.create({
         data: {
-          name: validator.stripLow(req.body.name)
+          name: validator.stripLow(req.body.name),
+          staff: {
+            connect: {
+              id: req.session.user.id
+            }
+          }
         }
       })
       if (result) {
