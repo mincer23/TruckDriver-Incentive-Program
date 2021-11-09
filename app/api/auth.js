@@ -2,7 +2,7 @@
 // Rudimentary authentication checker
 export default function (req, res, next) {
   // should we protect this path?
-  if (req.path !== '/login' && req.path !== '/api/login') { // yes
+  if (req.path !== '/login' && req.path !== '/api/login' && req.path !== '/api/users') { // yes
     // does the session exist
     if (req.session?.user) {
       // all questions OK, move on
