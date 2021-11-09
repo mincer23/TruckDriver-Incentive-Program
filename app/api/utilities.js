@@ -19,8 +19,13 @@ function ensureAuthenticated (req, res, next) {
   res.redirect('/')
 }
 
+function isPasswordStrong (password) {
+  return true
+}
+
 export {
   ensureAdmin,
   ensureSponsor,
-  ensureAuthenticated
+  ensureAuthenticated,
+  isPasswordStrong
 }
