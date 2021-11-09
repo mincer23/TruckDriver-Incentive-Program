@@ -3,7 +3,7 @@
     <div class="card-body">
       <div class="signup m-5">
           <form @submit="onSubmit">
-              <h1 class="card-title">Log In</h1>
+              <h1 class="card-title">Sign Up!</h1>
               <br>
               <div class="form-input">
                 <label class="label">Account Level</label>
