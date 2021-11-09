@@ -65,6 +65,8 @@ export default {
   },
 
   http: {
-    browserBaseUrl: '/'
+    browserBaseUrl: '/',
+    host: 'localhost',
+    port: 80
   }
 }
