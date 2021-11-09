@@ -6,9 +6,6 @@ const express = require('express')
 
 const router = express.Router()
 
-<<<<<<< Updated upstream
-router.post('/')
-=======
 router.post('/', async (req, res) => {
   const userName = req.body?.userName
   const password = req.body?.password
@@ -93,7 +90,6 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
     res.status(500)
   }
 })
->>>>>>> Stashed changes
 
 router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   let userData = null
