@@ -99,7 +99,7 @@
                 unchecked-value="not_accepted"
                 required
               >
-              I accept the <NuxtLink to="/termsofservice.html">Terms of Service</NuxtLink> and <NuxtLink to="/privacypolicy.html">Privacy Policy</NuxtLink>
+              I accept the <a href="termsofservice.html">Terms of Service</a> and <a href="privacypolicy.html">Privacy Policy</a>
               </b-form-checkbox>
             </div>
             <br>
