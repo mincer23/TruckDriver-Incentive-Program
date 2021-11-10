@@ -25,7 +25,7 @@
     "express-session": "^1.17.2",
     "nuxt": "^2.15.7",
     "nuxt-session": "^1.0.3",
-    "validator": "^13.6.0",
+    "validator": "^13.7.0",
     "vue-password-strength-meter": "^1.7.2",
     "zxcvbn": "^4.4.2"
   },

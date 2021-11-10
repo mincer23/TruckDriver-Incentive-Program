@@ -108,8 +108,7 @@ import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
 
 export default {
-  layout: "signedout",
-  
+  layout: 'signedout',
   components: {
     Notification,
     Password
@@ -133,7 +132,10 @@ export default {
       event.preventDefault()
       const data = {
         username: this.username,
-        password: this.password
+        password: this.password,
+        firstName: this.first,
+        lastName: this.last,
+        email: this.email
       }
       const result = await this.$http.$post('/api/login', data)
       this.state = !!result

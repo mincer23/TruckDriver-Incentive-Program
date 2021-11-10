@@ -43,7 +43,10 @@ export default {
     }
   },
   async fetch () {
-    this.data = await this.router.get('/')
+    this.data = await fetch('https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr').then(res => res.json())
+    for (let i = 0; i < this.data.results.length && i < 8; i++) {
+      this.data.results[i].imageSrc = await fetch('https://openapi.etsy.com/v2/listings/' + this.data.results[i].listing_id + '/images?api_key=vh0cf53nxhvc871sc5b2eabr').then(res => res.json()).then(result => result?.results[0]?.url_170x135)
+    }
   }
 }
 </script>

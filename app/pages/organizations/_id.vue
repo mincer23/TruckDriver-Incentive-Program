@@ -36,7 +36,7 @@
 import { mapState } from 'vuex'
 export default {
   async asyncData ({ req, $http, route }) {
-    const userData = await $http.$get('api/organizations/' + route.params.id)
+    const userData = await $http.$get('api/users/organizations/' + route.params.id)
     return { userData }
   },
   computed: {
