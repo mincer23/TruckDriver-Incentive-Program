@@ -3,12 +3,11 @@
     <div class="container">
       <div class="columns">
         <div class="column is-4 is-offset-4">
-          <h2 class="title has-text-centered">Sign Up!</h2>
+          <h2 class="title has-text-centered">Edit Information</h2>
 
           <Notification :message="error" v-if="error"/>
 
           <form method="post" @submit.prevent="register">
-        
             <div class="field">
               <label class="label">First Name</label>
               <div class="control">
@@ -70,6 +69,9 @@
                   required
                 />
               </div>
+              <client-only>
+                  <Password v-model="password" :strengthMeterOnly="true"/>
+              </client-only>
             </div>
              <div class="field">
               <label class="label">Confirm Password</label>
@@ -84,28 +86,24 @@
               </div>
             </div>
             <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Register</button>
+              <button type="submit" class="button is-dark is-fullwidth">Submit</button>
             </div>
           </form>
-
-          <div class="has-text-centered" style="margin-top: 20px">
-            Already have an account? <nuxt-link to="/login">Login</nuxt-link>
           </div>
         </div>
       </div>
-    </div>
   </section>
 </template>
 
 <script>
 import Notification from '~/components/Notification'
-
+import Password from '~/node_modules/vue-password-strength-meter'
 export default {
   components: {
     Notification,
+    Password
   },
-
-  data() {
+  data () {
     return {
       name1: '',
       name2: '',
