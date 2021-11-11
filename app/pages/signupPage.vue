@@ -104,6 +104,17 @@
             </div>
             <br>
             <Notification :message="error" v-if="password!=confirm"/>
+            <div class="login-link text-left">
+              <NuxtLink to="/login">
+                Already have an account?
+              </NuxtLink>
+            </div>
+            <div class="forgot-password text-left">
+              <NuxtLink to="/forgot-password">
+                Forgot password?
+              </NuxtLink>
+            </div>
+            <br>
             <div class="control">
               <button :disabled="terms==='not_accepted'" type="submit" class="btn btn-primary btn-lg btn-square">Register</button>
             </div>
