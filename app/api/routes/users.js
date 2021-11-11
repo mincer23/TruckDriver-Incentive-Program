@@ -13,14 +13,15 @@ router.post('/', async (req, res) => {
   const lastName = req.body?.lastName
   // do we have all required fields
   if (!(userName && password && email && firstName && lastName)) {
-    res.status(400)
+    res.sendStatus(400)
   }
   // is the password strong enough
   if (!isPasswordStrong(password)) {
-    res.status(400)
+    res.sendStatus(400)
   }
   // does username or email already exist
-  const existingUser = await prisma.user.findMany({
+  // have to destructure because findMany always gives back a list
+  const [existingUser] = await prisma.user.findMany({
     where: {
       OR: [
         { userName },
@@ -30,7 +31,7 @@ router.post('/', async (req, res) => {
   })
   // yes
   if (existingUser) {
-    res.status(400)
+    res.sendStatus(400)
   }
   // no
   const newUser = await prisma.user.create({
@@ -42,17 +43,17 @@ router.post('/', async (req, res) => {
       lastName
     }
   })
-  if (newUser) { // create query was successful
-    res.status(200)
+  if (await newUser) { // create query was successful
+    res.sendStatus(200)
   } else { // something broke on our end
-    res.status(500)
+    res.sendStatus(500)
   }
 })
 
 router.put('/:id', ensureAuthenticated, async (req, res) => {
   // only allow admins or the user in question to update a user
   if (Number(req.params.id) !== req.session.user.id && !req.session.user.isAdmin) {
-    res.status(400)
+    res.sendStatus(400)
   }
   const existingData = await prisma.user.findUnique({
     where: {
@@ -61,7 +62,7 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
   })
   // if user not found
   if (!existingData) {
-    res.status(400)
+    res.sendStatus(400)
   }
   // let's only take the data we want to update
   const userName = req.body?.userName || existingData.userName
@@ -84,9 +85,9 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
     }
   })
   if (result) {
-    res.status(200)
+    res.sendStatus(200)
   } else { // something broke on our end
-    res.status(500)
+    res.sendStatus(500)
   }
 })
 
@@ -114,6 +115,63 @@ router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
     }
   } else if (req.session.user) { // get their own profile
     res.json(req.session.user)
+  }
+})
+
+// commit a point change to a user
+// `change` field in PUT data should be positive for addition, negative for subtraction.
+router.put('/:userId/:orgId/points', async (req, res) => {
+  // required fields
+  const userId = Number(req.params.userId)
+  const orgId = Number(req.params.orgId)
+  const change = Number(req.body.change)
+  if (!userId || !orgId || !change) {
+    res.sendStatus(400)
+  }
+  // validate that the user in question exists
+  const currentPoints = await prisma.points.findUnique({
+    where: {
+      userId_orgId: { userId, orgId }
+    }
+  })
+  // no user found
+  if (!currentPoints) {
+    res.sendStatus(400)
+  }
+  // verify that initiator user is either admin or staff for this org
+  const staffUsers = await prisma.user.findMany({
+    where: {
+      staffFor: {
+        some: { id: orgId }
+      }
+    },
+    select: { id: true }
+  })
+  const staffIds = staffUsers.map(elem => elem.id)
+  // initiator not admin and not staff in this org
+  if (!staffIds.includes(Number(req.session.user.id)) && !req.session.user.isAdmin) {
+    res.sendStatus(400)
+  }
+
+  const requestedChange = Number(req.body.change)
+
+  // cannot adjust points into the negative. if delta negative and abs > current:
+  if (requestedChange < 0 && currentPoints.balance < Math.abs(requestedChange)) {
+    res.sendStatus(400)
+  }
+  // all checks passed, perform update
+  const result = await prisma.points.update({
+    where: {
+      userId_orgId: { userId, orgId }
+    },
+    data: {
+      balance: Number(currentPoints.balance) + requestedChange
+    }
+  })
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
   }
 })
 
