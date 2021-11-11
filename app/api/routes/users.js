@@ -66,7 +66,7 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
   }
   // let's only take the data we want to update
   const userName = req.body?.userName || existingData.userName
-  const passwordHash = zxcvbn(req.body?.password).score > 2 ? await bcrypt.hash(req.body.password) : existingData.passwordHash
+  const passwordHash = zxcvbn(req.body?.password).score > 2 ? await bcrypt.hash(req.body.password, 10) : existingData.passwordHash
   const email = req.body?.email || existingData.email
   const firstName = req.body?.firstName || existingData.firstName
   const lastName = req.body?.lastName || existingData.firstName

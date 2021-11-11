@@ -7,14 +7,11 @@
               <br>
               <div class="form-input">
                 <label class="label">Account Level</label>
-                <input
-                  type="text"
-                  class="form-control form-control-lg"
-                  name="account"
-                  v-model="account"
-                  :placeholder="'Enter a, s, or d followed by user code'"
-                  required
-                />
+                <select v-model="accountType" class="form-control" id="accountType">
+                  <option value=null>Choose account type...</option>
+                  <option value="0">Driver Account</option>
+                  <option value="1">Sponsor Account</option>
+                </select>
              </div>
              <br>
             <div class="form-input">
@@ -161,7 +158,9 @@ export default {
       error: 'Check Passwords!',
       email_error: 'Emails do not match',
       state: null,
-      terms: 'not_accepted'
+      terms: 'not_accepted',
+      accountType: null
+
     }
   },
   methods: {
