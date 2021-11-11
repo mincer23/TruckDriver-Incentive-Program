@@ -54,6 +54,20 @@
             </div>
             <br>
             <div class="form-input">
+              <label class="label"> Confirm Email</label>
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  name="confirm-email"
+                  v-model="confirmemail"
+                  :placeholder="'Retype Email'"
+                  required
+                />
+            </div>
+            <br>
+            <Notification :message="email_error" v-if="email!=confirmemail"/>
+            <br>
+            <div class="form-input">
               <label class="label">Username</label>
                 <input
                   type="text"
@@ -145,6 +159,7 @@ export default {
       password: '',
       confirm: '',
       error: 'Check Passwords!',
+      email_error: 'Emails do not match',
       state: null,
       terms: 'not_accepted'
     }
