@@ -18,8 +18,12 @@
                     Founded: {{ new Date(org.created).toLocaleDateString("en-us") }}
                   </b-col>
                   <b-col>
-                    <b-button v-if="userIsDriverForOrg(org.id)" variant="success" disabled>Joined!</b-button>
-                    <b-button v-else variant="primary" to="/organizations/1/apply">Apply</b-button>
+                    <b-button v-if="userIsDriverForOrg(org.id)" variant="success" disabled block>
+                      Joined!
+                    </b-button>
+                    <b-button v-else variant="primary" to="/organizations/1/apply" block>
+                      Apply
+                    </b-button>
                   </b-col>
                 </b-row>
               </b-container>
@@ -54,7 +58,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .headerImage {
   height: 2em;
   max-width: 100%;
