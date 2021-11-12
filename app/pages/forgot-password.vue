@@ -11,8 +11,8 @@
         </div>
         <br>
         <label for="security-question">Select Your Security Question</label>
-        <select class="form-control" id="security-question">
-          <option selected>Choose question...</option>
+        <select v-model="question" name="question" class="form-control">
+          <option value=null>Choose question...</option>
           <option value="0">What was your first car?</option>
           <option value="1">What was the name of your first pet?</option>
           <option value="2">What high school did you attend?</option>
@@ -30,13 +30,13 @@
 </template>
 
 <script>
-//  import { mapMutations } from 'vuex'
 export default {
   layout: 'signedout',
   data () {
     return {
-      userName: this.userName
-      // question: security-question.value
+      userName: this.userName,
+      question: null,
+      answer: this.answer
     }
   }// ,
 /*  methods: {

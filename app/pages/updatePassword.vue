@@ -1,46 +1,53 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-4 is-offset-4">
-          <h2 class="title has-text-centered">Change Password</h2>
-          <form method="post" @submit.prevent="updateUser">
-            <div class="field">
-              <label class="label">New Password</label>
-              <div class="control">
-                <input
-                  type="password"
-                  class="input"
-                  name="password"
-                  v-model="password"
-                  required
-                >
-                <client-only>
-                  <Password v-model="password" :strengthMeterOnly="true"/>
-                </client-only>
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Confirm Password</label>
-              <div class="control">
-                <input
-                  type="password"
-                  class="input"
-                  name="Confirm Password"
-                  v-model="confirm"
-                  required
-                >
-              </div>
-            </div>
-            <Notification :message="error" v-if="password!=confirm"/>
-            <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Update Password</button>
-            </div>
-          </form>
-        </div>
+  <div>
+    <Header page-title="Change Password" />
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title text-center">Change Password</h2>
+        <form method="post" @submit="updateUser">
+          <div class="oldPassword">
+            <label>Old Password</label>
+            <input
+              v-model="oldpassword"
+              type="password"
+              name="oldpassword"
+              class="form-control"
+            >
+          </div>
+          <br>
+          <div class="newpassword">
+            <label class="label">New Password</label>
+            <input
+              v-model="password"
+              type="password"
+              class="form-control"
+              name="password"
+              required
+            >
+            <client-only>
+              <Password v-model="password" :strength-meter-only="true" />
+            </client-only>
+          </div>
+          <br>
+          <div class="confirmpassword">
+            <label class="label">Confirm Password</label>
+            <input
+              v-model="confirm"
+              type="password"
+              class="form-control"
+              name="Confirm Password"
+              required
+            >
+          </div>
+          <Notification v-if="password!=confirm" :message="error" />
+          <br>
+          <div class="control">
+            <b-button type="submit" class="button is-fullwidth">Update Password</b-button>
+          </div>
+        </form>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -56,27 +63,36 @@ export default {
     return {
       password: '',
       confirm: '',
-      error: 'Check Passwords!'
+      oldpassword: '',
+      error: 'Check Passwords!',
+      status: null
     }
   },
-  computed () {
-    return {
-      ...mapGetters(['getUser'])
-    }
+  computed: {
+    ...mapGetters(['getUser'])
   },
   methods: {
-    async updateUser () {
+    async updateUser (event) {
+      event.preventDefault()
       try {
-        await this.$http.put('/api/user/' + this.getUser.id, {
-          password: this.password
+        // eslint-disable-next-line no-unused-vars
+        const update = await this.$http.put('/api/users/' + this.getUser.id, {
+          password: this.password,
+          oldpassword: this.oldpassword
         })
-
-        this.$router.push('/')
+        this.status = true
       } catch (e) {
-        this.error = e.response.data.message
+        this.status = false
       }
     }
   }
 }
 
 </script>
+
+<style scoped>
+.card {
+  margin: auto;
+  width: 500px;
+}
+</style>
