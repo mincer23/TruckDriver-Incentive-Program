@@ -51,7 +51,7 @@ router.post('/', ensureAuthenticated, async (req, res) => {
 })
 
 // update organization info (including header image)
-router.put('/:orgId', upload.single('headerImage'), async (req, res) => {
+router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, res) => {
   // did they even give us anything to update
   if ((!req.file && !req.body.name) || !req.params.orgId) {
     res.sendStatus(400)
@@ -64,6 +64,12 @@ router.put('/:orgId', upload.single('headerImage'), async (req, res) => {
 
   if (!orgData) {
     res.sendStatus(404) // not found
+  }
+
+  // make sure the person submitting is allowed to change this
+  const validUsers = orgData.staff.map(elem => elem.id)
+  if (!validUsers.includes(req.session.user.id)) {
+    res.sendStatus(403)
   }
 
   const result = await prisma.organization.update({
