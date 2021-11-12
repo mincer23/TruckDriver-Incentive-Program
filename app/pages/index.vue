@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header page-title="Driver Dashboard" />
+    <Header page-title="Driver Dashboard" :header-image="getUser.driverFor.length > 0 ? getUser.driverFor[0].headerImage : null" />
     <div v-if="getUser">
       <SplashContainer
         :first-name="getUser.firstName"

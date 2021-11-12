@@ -2,6 +2,7 @@ import validator from 'validator'
 import { prisma } from '../prisma.js'
 import { ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
 const express = require('express')
+const upload = require('multer')({ dest: 'static/uploads/' })
 const router = express.Router()
 
 // get all organizations (used for search/browsing)
@@ -11,7 +12,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 })
 
 // create new organization (this must be done by a valid registered user)
-router.post('/', ensureAdmin, async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
   // check for required fields
   if (req?.body?.name) {
     // check db for existing orgs
@@ -24,9 +25,18 @@ router.post('/', ensureAdmin, async (req, res) => {
       res.sendStatus(303) // https://stackoverflow.com/a/40504085 303 for conflcits
     } else {
       // create org with all bindings
-      const result = await prisma.organization.create({
+      const result = await prisma.catalog.create({
         data: {
-          name: validator.stripLow(req.body.name)
+          organization: {
+            create: {
+              name: validator.stripLow(req.body.name),
+              staff: {
+                connect: {
+                  id: req.session.user.id
+                }
+              }
+            }
+          }
         }
       })
       if (result) {
@@ -37,6 +47,39 @@ router.post('/', ensureAdmin, async (req, res) => {
     }
   } else {
     res.sendStatus(400)
+  }
+})
+
+// update organization info (including header image)
+router.put('/:orgId', upload.single('headerImage'), async (req, res) => {
+  // did they even give us anything to update
+  if ((!req.file && !req.body.name) || !req.params.orgId) {
+    res.sendStatus(400)
+  }
+
+  // is the org they asked for even real
+  const orgData = await prisma.organization.findUnique({
+    where: { id: Number(req.params.orgId) }
+  })
+
+  if (!orgData) {
+    res.sendStatus(404) // not found
+  }
+
+  const result = await prisma.organization.update({
+    where: {
+      id: Number(req.params.orgId)
+    },
+    data: {
+      name: req.body.name || orgData.name,
+      headerImage: req?.file?.filename
+    }
+  })
+
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
   }
 })
 
