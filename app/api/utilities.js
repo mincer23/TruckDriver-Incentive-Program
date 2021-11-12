@@ -1,5 +1,6 @@
 // This file contains some recurring helper functions for the backend, mostly
 // security stuff for routes that require specific flavors of authentication
+const zxcvbn = require('zxcvbn')
 
 // Simple route middleware to ensure user is admin.
 function ensureAdmin (req, res, next) {
@@ -20,9 +21,11 @@ function ensureAuthenticated (req, res, next) {
 }
 
 // zxcvbn password handling
-function isPasswordStrong (req, res, next) {
-  // this will do shit later trust me -- ken
-  return true
+function isPasswordStrong (password) {
+  if (zxcvbn(password).score > 2) {
+    return true
+  }
+  return false
 }
 
 export {

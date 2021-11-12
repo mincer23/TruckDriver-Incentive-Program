@@ -168,7 +168,6 @@ export default {
     ...mapMutations(['setUser']),
     async onSubmit (event) {
       event.preventDefault()
-      console.log(this.terms)
       const data = {
         userName: this.userName,
         password: this.password,
@@ -176,13 +175,15 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName
       }
-      const result = await this.$http.$post('/api/users', data)
+      const result = await this.$axios.$post('/api/users', data)
       this.state = !!result
-      if (result) {
-        console.log(result)
-        this.setUser(result)
+      const login = await this.$axios.$post('/api/login', data)
+      if (login) {
         this.$nextTick(() => {
-          this.$router.push('/')
+          this.setUser(login)
+          this.$nextTick(() => {
+            this.$router.push('/')
+          })
         })
       }
     }

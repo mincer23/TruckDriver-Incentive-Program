@@ -1,6 +1,5 @@
 import { prisma } from '../prisma.js'
 import { ensureAuthenticated, isPasswordStrong } from '../utilities.js'
-const zxcvbn = require('zxcvbn')
 const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
@@ -60,13 +59,21 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
       id: Number(req.params.id)
     }
   })
+
   // if user not found
   if (!existingData) {
     res.sendStatus(400)
   }
+
+  // if provided old password does not match
+  const oldPassMatches = await bcrypt.compare(req.body?.oldpassword, existingData.passwordHash)
+  if (!oldPassMatches) {
+    res.sendStatus(400)
+  }
+
   // let's only take the data we want to update
   const userName = req.body?.userName || existingData.userName
-  const passwordHash = zxcvbn(req.body?.password).score > 2 ? await bcrypt.hash(req.body.password) : existingData.passwordHash
+  const passwordHash = isPasswordStrong(req.body?.password) ? await bcrypt.hash(req.body.password, 10) : existingData.passwordHash
   const email = req.body?.email || existingData.email
   const firstName = req.body?.firstName || existingData.firstName
   const lastName = req.body?.lastName || existingData.firstName

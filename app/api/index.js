@@ -30,13 +30,13 @@ app.get('/logout', (req, res) => {
 
 app.post('/login', async (req, res) => {
   // check that required fields are here
-  if (!req?.body?.username || !req?.body?.password) {
+  if (!(req?.body?.username || req?.body?.userName) || !req?.body?.password) {
     res.sendStatus(400) // if not, yell at the user
   } else {
     // fetch the user matching the username provided
     const userData = await prisma.user.findUnique({
       where: {
-        userName: req.body.username
+        userName: req.body.username || req.body.userName
       },
       include: {
         driverFor: true,
