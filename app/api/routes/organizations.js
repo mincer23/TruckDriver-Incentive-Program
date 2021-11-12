@@ -89,6 +89,51 @@ router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, r
   }
 })
 
+// accept or reject an incoming organization
+router.post('/:orgId/status', ensureAdmin, async (req, res) => {
+  // required fields
+  if (typeof req.body.approve === 'undefined') {
+    // we can't use just !req.body.approve since it's a boolean, may be false
+    res.sendStatus(400)
+  }
+
+  // verify org exists
+  const orgData = await prisma.organization.findUnique({
+    where: {
+      id: Number(req.params.orgId),
+      confirmed: false
+    }
+  })
+
+  if (!orgData) {
+    res.sendStatus(404)
+  }
+
+  const approve = Boolean(req.body.approve)
+  let result = null
+  if (approve) { // mark the org as ok to go
+    result = await prisma.organization.update({
+      where: {
+        id: Number(req.params.orgId)
+      },
+      data: {
+        confirmed: true
+      }
+    })
+  } else { // purge the org from existence
+    result = await prisma.organization.delete({
+      where: {
+        id: Number(req.params.orgId)
+      }
+    })
+  }
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
 // remove a specific driver from a specific organization and nuke their points
 router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
   // required params
