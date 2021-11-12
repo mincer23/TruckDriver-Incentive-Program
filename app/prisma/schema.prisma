@@ -43,6 +43,7 @@ model Application {
 model Organization {
   id             Int            @id @default(autoincrement())
   name           String         @db.VarChar(255) @unique
+  created        DateTime       @default(now())
   drivers        User[]         @relation("drivers")
   staff          User[]         @relation("staff")
   catalog        Catalog?

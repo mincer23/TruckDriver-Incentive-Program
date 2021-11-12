@@ -7,7 +7,16 @@ const router = express.Router()
 
 // get all organizations (used for search/browsing)
 router.get('/', ensureAuthenticated, async (req, res) => {
-  const result = await prisma.organization.findMany()
+  const result = await prisma.organization.findMany({
+    include: {
+      _count: {
+        select: {
+          drivers: true,
+          staff: true
+        }
+      }
+    }
+  })
   res.json(result)
 })
 
