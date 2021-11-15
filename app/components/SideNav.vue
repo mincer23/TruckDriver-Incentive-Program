@@ -32,7 +32,7 @@
       <b-col cols="12" class="w-100 p-0 m-0">
         <hr class="w-100">
       </b-col>
-      <NuxtLink to="/users/1" class="w-100 text-decoration-none text-white p-0 ml-4">
+      <NuxtLink :to="'/users/' + getUser.id" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Account</span>
         </b-col>
@@ -47,8 +47,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-
+  computed: {
+    ...mapGetters(['getUser'])
+  }
 }
 </script>
 

@@ -20,6 +20,35 @@ router.get('/', ensureAuthenticated, async (req, res) => {
   res.json(result)
 })
 
+router.get('/:id', ensureAuthenticated, async (req, res) => {
+  const result = await prisma.organization.findUnique({
+    where: {
+      id: Number(req.params.id)
+    },
+    include: {
+      drivers: {
+        select: {
+          id: true,
+          userName: true,
+          firstName: true,
+          lastName: true,
+          email: true
+        }
+      },
+      staff: {
+        select: {
+          id: true,
+          userName: true,
+          firstName: true,
+          lastName: true,
+          email: true
+        }
+      }
+    }
+  })
+  res.json(result)
+})
+
 // create new organization (this must be done by a valid registered user)
 router.post('/', ensureAuthenticated, async (req, res) => {
   // check for required fields

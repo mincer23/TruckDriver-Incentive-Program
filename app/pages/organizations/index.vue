@@ -6,7 +6,12 @@
         <b-col v-for="org in organizations" :key="org.id" cols="12">
           <b-card>
             <b-card-title>
-              {{ org.name }}  <img v-if="org.headerImage" :src="'/uploads/' + org.headerImage" class="headerImage">
+              <NuxtLink
+                :to="'/organizations/' + org.id"
+                class="text-decoration-none text-info"
+              >
+                {{ org.name }}  <img v-if="org.headerImage" :src="'/uploads/' + org.headerImage" class="headerImage">
+              </NuxtLink>
             </b-card-title>
             <b-card-body>
               <b-container>
@@ -21,7 +26,7 @@
                     <b-button v-if="userIsDriverForOrg(org.id)" variant="success" disabled block>
                       Joined!
                     </b-button>
-                    <b-button v-else variant="primary" to="/organizations/1/apply" block>
+                    <b-button v-else variant="primary" :to="'/organizations/' + org.id + '/apply'" block>
                       Apply
                     </b-button>
                   </b-col>
@@ -43,12 +48,15 @@ export default {
     return { organizations }
   },
   computed: {
-    ...mapGetters(['getUser'])
+    ...mapGetters([
+      'getUser',
+      'getHeaderImage'
+    ])
   },
   methods: {
     userIsDriverForOrg (orgId) {
-      const userOrgsAsDriver = this.getUser.driverFor.map(elem => elem.id)
-      if (userOrgsAsDriver.includes(orgId)) {
+      const userOrgsAsDriver = this.getUser?.driverFor.map(elem => elem.id)
+      if (userOrgsAsDriver?.length > 0 && userOrgsAsDriver.includes(orgId)) {
         return true
       } else {
         return false

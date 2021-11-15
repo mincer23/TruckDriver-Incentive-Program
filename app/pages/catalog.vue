@@ -51,25 +51,25 @@ export default {
     }
   },
   mehtods: {
-    async addCart (item) {
-      item.preventDefault
+    addCart (item) {
+      item.preventDefault()
       const data = {
-        item = this.item
+        item: this.item
       }
+      console.log(data)
       this.$emit('update-cart', item)
     },
-  
     async fetch () {
       this.data = await fetch('https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr').then(res => res.json())
       for (let i = 0; i < this.data.results.length && i < 8; i++) {
         this.data.results[i].imageSrc = await fetch('https://openapi.etsy.com/v2/listings/' + this.data.results[i].listing_id + '/images?api_key=vh0cf53nxhvc871sc5b2eabr').then(res => res.json()).then(result => result?.results[0]?.url_170x135)
       }
     },
-    sortAsc(data){
-      return _.orderBy(data, ' title', 'asc');
+    sortAsc (data) {
+      // return _.orderBy(data, ' title', 'asc')
     },
-    sortDesc(data){
-      return _.orderBy(data, ' title', 'desc');
+    sortDesc (data) {
+      // return _.orderBy(data, ' title', 'desc')
     }
 
   }
