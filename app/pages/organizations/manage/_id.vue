@@ -16,7 +16,7 @@
                   </b-button>
                 </b-col>
                 <b-col cols="1">
-                  <b-button variant="danger" block @click="removeDriver(driver.id, firstName + ' ' + lastName)">
+                  <b-button variant="danger" block @click.prevent="removeDriver(driver.id, driver.firstName + ' ' + driver.lastName)">
                     Kick
                   </b-button>
                 </b-col>
@@ -32,8 +32,11 @@
                   {{ staff.firstName + ' ' + staff.lastName }}
                 </b-col>
                 <b-col cols="4">
-                  <b-button variant="danger" block @click="removeStaff(staff.id, firstName + ' ' + lastName)">
+                  <b-button v-if="orgData.staff.length > 1" variant="danger" block @click.prevent="removeStaff(staff.id, staff.firstName + ' ' + staff.lastName)">
                     Kick
+                  </b-button>
+                  <b-button v-else variant="danger" block disabled>
+                    Can't kick the only staff!
                   </b-button>
                 </b-col>
               </b-row>
@@ -78,13 +81,13 @@ export default {
   },
   methods: {
     async removeDriver (id, fullName) {
-      const result = await this.$http.$delete('/organization/' + this.orgId + '/driver/' + id)
+      const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/driver/' + id)
       if (result) {
         alert('Successfully removed driver: ' + fullName)
       }
     },
     async removeStaff (id, fullName) {
-      const result = await this.$http.$delete('/organization/' + this.orgId + '/staff/' + id)
+      const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/staff/' + id)
       if (result) {
         alert('Successfully removed staff: ' + fullName)
       }

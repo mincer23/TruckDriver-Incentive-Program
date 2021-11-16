@@ -174,13 +174,17 @@ router.post('/:orgId/status', ensureAdmin, async (req, res) => {
 })
 
 // get all the applications that are attached to this organization
-router.get('/:orgId/applications', async (req, res) => {
+router.get('/:orgId/applications', ensureSponsor, async (req, res) => {
   const orgId = Number(req.params.orgId)
   const result = await prisma.application.findMany({
     where: {
       organization: {
         id: orgId
-      }
+      },
+      status: 'WAITING'
+    },
+    include: {
+      user: true
     }
   })
   res.json(result)
@@ -249,6 +253,101 @@ router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
   }
 
   res.sendStatus(200)
+})
+
+// remove a specific staffer from a specific organization
+router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
+  // required params
+  if (!(req.params.orgId && req.params.staffId)) {
+    res.sendStatus(400)
+  }
+
+  // make our params just a little easier to work with
+  const orgId = Number(req.params.orgId)
+  const staffId = Number(req.params.staffId)
+  const requesterId = Number(req.session.user.id)
+
+  // verify that the sponsor who submitted this request was a staffer for the
+  // org to which the user in question belongs
+  const staffOrgs = await prisma.user.findUnique({
+    where: {
+      id: staffId
+    },
+    select: {
+      staffFor: true
+    }
+  })
+  const requesterOrgs = await prisma.user.findUnique({
+    where: {
+      id: requesterId
+    },
+    select: {
+      staffFor: true
+    }
+  })
+  const staffOrgIds = staffOrgs.staffFor.map(elem => elem.id)
+  const requesterOrgIds = requesterOrgs.staffFor.map(elem => elem.id)
+  // if the requester is a manager for an org that the driver belongs to
+  if (!(requesterOrgIds.includes(orgId) && staffOrgIds.includes(orgId))) {
+    res.sendStatus(400)
+  }
+  // remove user from org
+  const orgDelete = await prisma.organization.update({
+    where: {
+      id: orgId
+    },
+    data: {
+      staff: {
+        disconnect: {
+          id: staffId
+        }
+      }
+    }
+  })
+  if (!orgDelete) {
+    res.sendStatus(500)
+  }
+
+  res.sendStatus(200)
+})
+
+router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
+  if (!req.body.accept || typeof req.body.accept !== 'boolean') {
+    res.sendStatus(400)
+  }
+  const result = await prisma.application.update({
+    where: {
+      id: Number(req.params.appId)
+    },
+    data: {
+      status: req.body.accept ? 'ACCEPTED' : 'DENIED'
+    },
+    include: {
+      user: true
+    }
+  })
+  if (req.body.accept && result) {
+    const addUser = await prisma.organization.update({
+      where: {
+        id: Number(req.params.orgId)
+      },
+      data: {
+        drivers: {
+          connect: {
+            id: result.user.id
+          }
+        }
+      }
+    })
+    if (!addUser) {
+      res.sendStatus(400)
+    }
+  }
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
 })
 
 module.exports = router

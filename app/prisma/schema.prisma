@@ -50,6 +50,7 @@ model Organization {
   catalogId      Int?
   balances       Points[]
   applications   Application[]
+  allowApplications Boolean     @default(true)
   confirmed      Boolean        @default(false) // whether an admin has confirmed this org
   headerImage    String?        @db.VarChar(50)
 
