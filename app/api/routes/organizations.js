@@ -20,6 +20,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
   res.json(result)
 })
 
+// get the details of the specific organization
 router.get('/:id', ensureAuthenticated, async (req, res) => {
   const result = await prisma.organization.findUnique({
     where: {
@@ -97,7 +98,8 @@ router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, r
 
   // is the org they asked for even real
   const orgData = await prisma.organization.findUnique({
-    where: { id: Number(req.params.orgId) }
+    where: { id: Number(req.params.orgId) },
+    include: { staff: true }
   })
 
   if (!orgData) {
@@ -119,7 +121,6 @@ router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, r
       headerImage: req?.file?.filename
     }
   })
-
   if (result) {
     res.sendStatus(200)
   } else {
@@ -170,6 +171,19 @@ router.post('/:orgId/status', ensureAdmin, async (req, res) => {
   } else {
     res.sendStatus(500)
   }
+})
+
+// get all the applications that are attached to this organization
+router.get('/:orgId/applications', async (req, res) => {
+  const orgId = Number(req.params.orgId)
+  const result = await prisma.application.findMany({
+    where: {
+      organization: {
+        id: orgId
+      }
+    }
+  })
+  res.json(result)
 })
 
 // remove a specific driver from a specific organization and nuke their points

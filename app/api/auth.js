@@ -6,7 +6,7 @@ export default function (req, res, next) {
     // does the session exist
     if (req.session?.user) {
       // all questions OK, move on
-      console.log('ALLOWED ACCESS TO ' + req.session.user.userName)
+      console.log('ALLOWED ACCESS TO ' + req.session.user.userName + ' TO ROUTE: ' + req.path)
       next()
     } else {
       // if any of the tests fail, redirect to login
