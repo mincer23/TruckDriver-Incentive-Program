@@ -43,12 +43,16 @@ model Application {
 model Organization {
   id             Int            @id @default(autoincrement())
   name           String         @db.VarChar(255) @unique
+  created        DateTime       @default(now())
   drivers        User[]         @relation("drivers")
   staff          User[]         @relation("staff")
   catalog        Catalog?
   catalogId      Int?
   balances       Points[]
   applications   Application[]
+  allowApplications Boolean     @default(true)
+  confirmed      Boolean        @default(false) // whether an admin has confirmed this org
+  headerImage    String?        @db.VarChar(50)
 
   @@index([id])
 }
@@ -82,6 +86,8 @@ model Order {
   catalog        Catalog        @relation(fields: [catalogId], references: [id])
   catalogId      Int
   placed         DateTime       @default(now())
+  shippingAddress String?        @db.VarChar(255)
+  billingAddress  String?        @db.VarChar(255)
   status         String         @db.VarChar(10) @default("PLACED") // PLACED, CANCELLED, SHIPPED, DELIVERED
   items          Item[]
   event          LogEvent?

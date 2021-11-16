@@ -1,7 +1,7 @@
 <template>
   <b-navbar variant="light" type="light" class="mb-3">
     <b-navbar-brand class="text-black font-weight-bold">
-      {{ pageTitle }}
+      <b-img v-if="headerImage" :src="'/uploads/' + headerImage" fluid class="headerImage" /> {{ pageTitle }}
     </b-navbar-brand>
     <b-navbar-nav class="ml-auto align-items-center">
       <b-nav-item>
@@ -49,6 +49,11 @@ export default {
     pageTitle: {
       type: String,
       required: true
+    },
+    headerImage: {
+      type: String,
+      required: false,
+      default: null
     }
   },
   computed: {
@@ -60,5 +65,12 @@ export default {
 <style scoped>
   .bordered {
     border-right: 2px solid lightgrey;
+  }
+
+  .headerImage {
+    max-height: 2em;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
   }
 </style>

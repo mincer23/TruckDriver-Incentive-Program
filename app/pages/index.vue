@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header page-title="Driver Dashboard" />
+    <Header page-title="Driver Dashboard" :header-image="getHeaderImage" />
     <div v-if="getUser">
       <SplashContainer
         :first-name="getUser.firstName"
@@ -44,7 +44,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser'])
+    ...mapGetters([
+      'getUser',
+      'getHeaderImage'
+    ])
   }
 }
 </script>
