@@ -185,9 +185,9 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName
       }
-      const result = await this.$axios.$post('/api/users', data)
+      const result = await this.$http.$post('/api/users', data)
       this.state = !!result
-      const login = await this.$axios.$post('/api/login', data)
+      const login = await this.$http.$post('/api/login', data)
       if (login) {
         this.$nextTick(() => {
           this.setUser(login)
