@@ -1,5 +1,5 @@
 import { prisma } from '../prisma.js'
-import { ensureAuthenticated, isPasswordStrong } from '../utilities.js'
+import { ensureAuthenticated, ensureSponsor, isPasswordStrong } from '../utilities.js'
 const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
@@ -125,9 +125,48 @@ router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   }
 })
 
+// get everything that has ever happened to a user ever
+router.get('/:userId/logs', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  const [userData] = await prisma.user.findMany({
+    where: {
+      id: userId
+    },
+    include: {
+      logs: true
+    }
+  })
+  res.json(userData.logs)
+})
+
+// get all of a user's point changes
+router.get('/:userId/transactions', async (req, res) => {
+  const userId = Number(req.params.userId)
+  const [userData] = await prisma.user.findMany({
+    where: {
+      id: userId
+    },
+    include: {
+      balances: {
+        select: {
+          balance: true,
+          events: true,
+          organization: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      }
+    }
+  })
+  res.json(userData.balances)
+})
+
 // commit a point change to a user
 // `change` field in PUT data should be positive for addition, negative for subtraction.
-router.put('/:userId/:orgId/points', async (req, res) => {
+router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // required fields
   const userId = Number(req.params.userId)
   const orgId = Number(req.params.orgId)

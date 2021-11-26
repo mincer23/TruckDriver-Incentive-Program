@@ -42,7 +42,11 @@ app.post('/login', async (req, res) => {
         driverFor: true,
         staffFor: true,
         orders: true,
-        balances: true
+        balances: {
+          include: {
+            organization: true
+          }
+        }
       }
     })
     if (userData) { // prisma returns null on no object found

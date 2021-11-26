@@ -8,18 +8,39 @@
     </b-row>
     <b-row>
       <b-col cols="6">
-        <SplashCardContainer :transactions="transactions">
-          {{ balance }}
+        <SplashCardContainer
+          :transactions="transactions"
+          button-text="All Points"
+        >
+          <b-container fluid>
+            <b-row v-for="balance in balances" :key="balance.organization.id" no-gutters>
+              <b-col cols="10">
+                <NuxtLink class="text-primary text-decoration-none" to="/organizations/1">
+                  {{ balance.organization.name }}
+                </NuxtLink>
+              </b-col>
+              <b-col cols="2">
+                <b-badge>{{ balance.balance }}</b-badge>
+              </b-col>
+            </b-row>
+            <b-row v-if="balances.length === 0" no-gutters>
+              <b-col cols="12">
+                Not a member of any organization. <NuxtLink to="/organizations">Join one to get started!</NuxtLink>
+              </b-col>
+            </b-row>
+          </b-container>
         </SplashCardContainer>
       </b-col>
       <b-col cols="6">
         <SplashCardContainer
+          id="1"
           bg-variant="secondary"
           :transactions="transactions"
-          collapse-button-text="All Orders"
+          button-text="All Orders"
           header="Orders"
+          button-to="/orders"
         >
-          {{ "0" }}
+          {{ transactions.length }}
         </SplashCardContainer>
       </b-col>
     </b-row>
@@ -33,14 +54,18 @@ export default {
       type: String,
       required: true
     },
-    balance: {
-      type: Number,
+    balances: {
+      type: Array,
       required: true
     },
     transactions: {
       type: Array,
       required: false,
       default: Array
+    },
+    organizations: {
+      type: Array,
+      required: true
     }
   }
 }

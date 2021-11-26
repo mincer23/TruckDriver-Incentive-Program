@@ -1,18 +1,13 @@
 <template>
   <div>
     <Header page-title="Driver Dashboard" :header-image="getHeaderImage" />
-    <div v-if="getUser">
-      <SplashContainer
-        :first-name="getUser.firstName"
-        :last-name="getUser.lastName"
-        :transactions="test_transactions"
-        :balance="Number(40000)"
-      />
-    </div>
-    <div v-else>
-      <!-- TODO: Add some cool splash screen for non-logged in folks! -->
-      <span>Please <b-button to="/login" variant="primary">Login</b-button> to view this page.</span>
-    </div>
+    <SplashContainer
+      :first-name="getUser.firstName"
+      :last-name="getUser.lastName"
+      :transactions="test_transactions"
+      :balances="getUser.balances"
+      :organizations="getUser.driverFor"
+    />
   </div>
 </template>
 
@@ -29,7 +24,7 @@ export default {
           id: 3
         },
         {
-          sponsor: 'The Meta',
+          sponsor: 'Piers Morgan Financial',
           totalPoints: 42000,
           pointChange: 2000,
           id: 2
