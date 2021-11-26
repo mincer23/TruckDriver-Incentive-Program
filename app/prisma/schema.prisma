@@ -24,6 +24,8 @@ model User {
   balances       Points[]
   applications   Application[]
   logs           LogEvent[]
+  secretQuestion Int            @default(0)
+  secretAnswerHash String       @db.VarChar(255)
 
   @@index([id])
 }

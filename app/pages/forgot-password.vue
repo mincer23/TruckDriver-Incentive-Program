@@ -3,7 +3,7 @@
     <div class="card-body">
       <br>
       <h1 class="card-title text-center">Forgot Password</h1>
-      <form method="post">
+      <form @submit="onSubmit">
         <br>
         <div class="username">
           <label>Please enter your username</label>
@@ -23,6 +23,9 @@
         <label for="answer">Security Question Answer</label>
         <input v-model="answer" type="text" class="form-control" placeholder="Type your answer..." required>
         <br>
+        <label for="newPassword">New Password</label>
+        <input v-model="newPassword" type="password" class="form-control" placeholder="New password" required>
+        <br>
         <button type="submit" class="btn btn-primary btn-lg btn-square">Submit</button>
       </form>
     </div>
@@ -30,24 +33,40 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   layout: 'signedout',
   data () {
     return {
       userName: this.userName,
       question: null,
-      answer: this.answer
+      answer: this.answer,
+      newPassword: null,
+      state: null
     }
-  }// ,
-/*  methods: {
-    ...
-    async onSumbit(event) {
+  },
+  methods: {
+    ...mapMutations(['setUser']),
+    async onSubmit (event) {
       event.preventDefault()
       const data = {
-        email: this.email
+        userName: this.userName,
+        question: this.question,
+        answer: this.answer,
+        newPassword: this.newPassword
       }
-      const result = await this.$http.$post('/api/', data)
-    } */
+
+      try {
+        const result = await this.$http.$post('/api/users/forgotPassword', data)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      } catch {
+        this.state = false
+      }
+    }
+  }
 }
 </script>
 

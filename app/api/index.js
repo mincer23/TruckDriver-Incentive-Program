@@ -1,5 +1,5 @@
 import { prisma } from './prisma.js'
-const bcrypt = require('bcrypt')
+import { comparePassword } from './utilities.js'
 
 const express = require('express')
 const session = require('express-session')
@@ -52,6 +52,8 @@ app.post('/login', async (req, res) => {
     if (userData) { // prisma returns null on no object found
       if (await comparePassword(req.body.password, userData.passwordHash)) {
         delete userData.passwordHash // dont put the password in the session obj
+        delete userData.secretAnswerHash // dont put any secret stuff in session obj
+        delete userData.secretQuestion
         req.session.user = userData
         res.json(userData)
       } else { // bad password
@@ -89,18 +91,6 @@ app.post('/updateStatus', async (req, res) => {
 app.get('/session', (req, res) => {
   res.json(req.session.user)
 })
-
-// https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
-async function comparePassword (password, hash) {
-  try {
-    const result = await bcrypt.compare(password, hash)
-    return result
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error)
-  }
-  return false
-}
 
 // Register the app handler with Nuxt
 export default {

@@ -8,7 +8,7 @@
     </b-row>
     <b-row>
       <b-col cols="6">
-        <SplashCardContainer
+        <SplashCard
           :transactions="transactions"
           button-text="All Points"
         >
@@ -29,10 +29,10 @@
               </b-col>
             </b-row>
           </b-container>
-        </SplashCardContainer>
+        </SplashCard>
       </b-col>
       <b-col cols="6">
-        <SplashCardContainer
+        <SplashCard
           id="1"
           bg-variant="secondary"
           :transactions="transactions"
@@ -41,7 +41,7 @@
           button-to="/orders"
         >
           {{ transactions.length }}
-        </SplashCardContainer>
+        </SplashCard>
       </b-col>
     </b-row>
   </b-container>

@@ -19,7 +19,7 @@ export const getters = {
   },
 
   getHeaderImage: (state) => {
-    if (state.session.staffFor.length > 0 && state.session.staffFor[0].headerImage) {
+    if (state.session?.staffFor?.length > 0 && state.session?.staffFor[0].headerImage) {
       return state.session.staffFor[0].headerImage
     } else if (state.session.driverFor.length > 0) {
       return state.session.driverFor[0].headerImage

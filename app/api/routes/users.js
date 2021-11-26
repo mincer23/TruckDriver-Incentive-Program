@@ -1,5 +1,5 @@
 import { prisma } from '../prisma.js'
-import { ensureAuthenticated, ensureSponsor, isPasswordStrong } from '../utilities.js'
+import { comparePassword, ensureAuthenticated, isPasswordStrong } from '../utilities.js'
 const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
@@ -218,6 +218,66 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
     res.sendStatus(200)
   } else {
     res.sendStatus(500)
+  }
+})
+
+// recover a lost password
+router.post('/forgotPassword', async (req, res) => {
+  const userName = String(req?.body?.userName)
+  const secretQuestion = Number(req?.body?.question)
+  const secretAnswer = String(req?.body?.answer)
+  const newPassword = String(req?.body?.newPassword)
+  // required fields check
+  if (!userName || (secretAnswer === undefined || secretAnswer === '') || secretQuestion === undefined || !newPassword) {
+    res.sendStatus(400)
+    return
+  }
+  const userData = await prisma.user.findUnique({
+    where: {
+      userName
+    }
+  })
+  // no user found
+  if (!userData) {
+    res.sendStatus(400)
+    return
+  }
+  // secret question doesnt match
+  if (secretQuestion !== userData.secretQuestion) {
+    res.sendStatus(400)
+    return
+  }
+  // secret answer doesnt match
+  if (!(await comparePassword(secretAnswer, userData.secretAnswerHash))) {
+    res.sendStatus(400)
+  } else {
+    const result = await prisma.user.update({
+      where: {
+        userName
+      },
+      data: {
+        passwordHash: await bcrypt.hash(newPassword, 10)
+      },
+      include: {
+        driverFor: true,
+        staffFor: true,
+        orders: true,
+        balances: {
+          include: {
+            organization: true
+          }
+        }
+      }
+    })
+    if (result) {
+      delete result.passwordHash
+      delete result.secretAnswer
+      delete result.secretAnswerHash
+      req.session.user = result
+      res.json(result)
+    } else {
+      res.sendStatus(500)
+    }
   }
 })
 
