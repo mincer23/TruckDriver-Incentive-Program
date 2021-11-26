@@ -26,6 +26,7 @@
     "multer": "^1.4.3",
     "nuxt": "^2.15.7",
     "nuxt-session": "^1.0.3",
+    "request": "^2.88.2",
     "validator": "^13.7.0",
     "vue-password-strength-meter": "^1.7.2",
     "zxcvbn": "^4.4.2"

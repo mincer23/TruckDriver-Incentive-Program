@@ -58,4 +58,19 @@ router.post('/:id/item', ensureSponsor, async (req, res) => {
   res.json(result)
 })
 
+// lazy load support to not make etsy want to die
+router.get('/image/:etsyId', ensureAuthenticated, async (req, res) => {
+  const etsyId = String(req.params.etsyId)
+  if (!etsyId) {
+    res.sendStatus(400)
+    return
+  }
+  const image = await axios.get('https://openapi.etsy.com/v2/listings/' + etsyId + '/images?api_key=vh0cf53nxhvc871sc5b2eabr')
+    .then(res => res.data)
+    .then(res => res.results)
+    .then(res => res[0])
+    .then(res => res.url_170x135)
+  require('request').get(image).pipe(res)
+})
+
 module.exports = router
