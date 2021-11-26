@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header page-title="Catalog" :header-image="getHeaderImage" />
+    <Header page-title="Manage Catalog" :header-image="getHeaderImage" />
     <b-container>
       <b-row v-for="item in items" :key="item.id">
         <b-col cols="12">
@@ -8,12 +8,12 @@
             <b-container>
               <b-row align-v="center">
                 <b-col cols="3">
-                  <b-img :src="item.image">Image</b-img>
+                  <b-img src="https://placekitten.com/135/135">Image</b-img>
                 </b-col>
                 <b-col cols="6">
                   <b-row>
                     <b-col>
-                      <h4>{{ item.name }}</h4>
+                      <h4>{{ item.title }}</h4>
                     </b-col>
                   </b-row>
                   <b-row>
@@ -25,13 +25,12 @@
                 <b-col cols="3">
                   <b-row align-v="center">
                     <b-col>
-                      <h4>{{ item.price }} pts</h4>
+                      <h4>{{ Number(item.price) * 1000 }} pts</h4>
                     </b-col>
                   </b-row>
                   <b-row>
                     <b-col>
-                      <b-button v-if="Number(balance) > Number(item.price)" variant="success">Add to cart</b-button>
-                      <b-button v-else variant="secondary" disabled>Not enough points</b-button>
+                      <b-button variant="success">Add to catalog</b-button>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -47,12 +46,9 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  async asyncData ({ $http, store, params }) {
-    const catalog = await $http.$get('/api/catalogs/' + params.catalogId + '/items')
-    const items = catalog.items
-    const points = await $http.$get('/api/users/' + store.state.session.id + '/' + catalog.orgId + '/points')
-    const balance = points.balance
-    return { items, balance }
+  async asyncData ({ store, $http }) {
+    const items = await $http.$get('https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr')
+    return { items: items.results }
   },
   computed: {
     ...mapGetters(['getUser', 'getHeaderImage'])

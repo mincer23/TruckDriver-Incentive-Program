@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   layout: 'signedout',
   data () {
@@ -45,8 +45,10 @@ export default {
       state: null
     }
   },
+  computed: {
+    ...mapGetters(['getUser'])
+  },
   methods: {
-    ...mapMutations(['setUser']),
     async onSubmit (event) {
       event.preventDefault()
       const data = {

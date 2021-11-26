@@ -49,10 +49,39 @@ router.post('/', async (req, res) => {
   }
 })
 
+// get all catalogs that a user has access to
+router.get('/:userId/catalogs', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  if (!userId) {
+    res.sendStatus(400)
+    return
+  }
+
+  const result = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      driverFor: {
+        select: {
+          catalog: true,
+          id: true,
+          name: true
+        }
+      }
+    }
+  })
+  if (result) {
+    res.json(result)
+  } else {
+    res.sendStatus(400)
+  }
+})
+
+// update a user
 router.put('/:id', ensureAuthenticated, async (req, res) => {
   // only allow admins or the user in question to update a user
   if (Number(req.params.id) !== req.session.user.id && !req.session.user.isAdmin) {
     res.sendStatus(400)
+    return
   }
   const existingData = await prisma.user.findUnique({
     where: {
@@ -63,20 +92,21 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
   // if user not found
   if (!existingData) {
     res.sendStatus(400)
+    return
   }
 
   // if provided old password does not match
   const oldPassMatches = await bcrypt.compare(req.body?.oldpassword, existingData.passwordHash)
   if (!oldPassMatches) {
     res.sendStatus(400)
+    return
   }
 
   // let's only take the data we want to update
   const userName = req.body?.userName || existingData.userName
-  const passwordHash = isPasswordStrong(req.body?.password) ? await bcrypt.hash(req.body.password, 10) : existingData.passwordHash
   const email = req.body?.email || existingData.email
   const firstName = req.body?.firstName || existingData.firstName
-  const lastName = req.body?.lastName || existingData.firstName
+  const lastName = req.body?.lastName || existingData.lastName
 
   // update the user
   const result = await prisma.user.update({
@@ -85,14 +115,23 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
     },
     data: {
       userName,
-      passwordHash,
       email,
       firstName,
       lastName
+    },
+    include: {
+      driverFor: true,
+      staffFor: true,
+      orders: true,
+      balances: {
+        include: {
+          organization: true
+        }
+      }
     }
   })
   if (result) {
-    res.sendStatus(200)
+    res.json(result)
   } else { // something broke on our end
     res.sendStatus(500)
   }
@@ -162,6 +201,31 @@ router.get('/:userId/transactions', async (req, res) => {
     }
   })
   res.json(userData.balances)
+})
+
+// get the points of a specific org balance belonging to a user
+router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
+  // required fields
+  const userId = Number(req.params.userId)
+  const orgId = Number(req.params.orgId)
+  if (!userId || !orgId) {
+    res.sendStatus(400)
+    return
+  }
+  const balance = await prisma.points.findUnique({
+    where: {
+      userId_orgId: { userId, orgId }
+    },
+    select: {
+      balance: true
+    }
+  })
+
+  if (balance) {
+    res.json(balance)
+  } else {
+    res.sendStatus(400)
+  }
 })
 
 // commit a point change to a user
@@ -271,7 +335,7 @@ router.post('/forgotPassword', async (req, res) => {
     })
     if (result) {
       delete result.passwordHash
-      delete result.secretAnswer
+      delete result.secretQuestion
       delete result.secretAnswerHash
       req.session.user = result
       res.json(result)
