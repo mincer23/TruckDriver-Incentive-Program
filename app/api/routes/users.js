@@ -249,6 +249,87 @@ router.get('/:userId/orders', ensureAuthenticated, async (req, res) => {
   res.json(result)
 })
 
+// make a new order
+router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  if (userId !== Number(req.session.user.id)) {
+    res.sendStatus(400)
+    return
+  }
+  const orgId = req.body?.orgId ? Number(req.body.orgId) : null
+  const items = req.body?.items
+  if (!items || !userId || !orgId || items?.length === 0) {
+    console.log(orgId)
+    res.sendStatus(400)
+    return
+  }
+  const balance = await prisma.points.findUnique({
+    where: {
+      userId_orgId: { userId, orgId }
+    }
+  })
+  console.log(balance.balance)
+  const totalCostOfItems = await items.reduce((previous, currentelem) => previous + Number(currentelem.price), 0)
+  if (!balance || balance.balance < totalCostOfItems) {
+    res.sendStatus(400)
+    return
+  }
+  const itemIds = items.map(elem => Object({ id: elem.id }))
+  const createOrderResult = await prisma.order.create({
+    data: {
+      items: {
+        connect: itemIds
+      },
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      catalog: {
+        connect: {
+          orgId
+        }
+      },
+      event: {
+        create: {
+          user: {
+            connect: {
+              id: userId
+            }
+          },
+          ipAddress: String(req.ip),
+          modelName: 'USER',
+          balance: {
+            connect: {
+              userId_orgId: { userId, orgId }
+            }
+          },
+          oldValue: String(Number(balance.balance)),
+          newValue: String(Number(balance.balance) - Number(totalCostOfItems)),
+          accessType: 'CREATE'
+        }
+      }
+    }
+  })
+  if (!createOrderResult) {
+    res.sendStatus(500)
+    return
+  }
+  const updatePointBalanceResult = await prisma.points.update({
+    where: {
+      userId_orgId: { userId, orgId }
+    },
+    data: {
+      balance: balance.balance - totalCostOfItems
+    }
+  })
+  if (!updatePointBalanceResult) {
+    res.sendStatus(500)
+  } else {
+    res.sendStatus(200)
+  }
+})
+
 // modify an order
 router.put('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
   const userId = Number(req.params.userId)

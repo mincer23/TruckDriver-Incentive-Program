@@ -29,9 +29,12 @@
                     </b-col>
                   </b-row>
                   <b-row>
-                    <b-col>
-                      <b-button v-if="Number(balance) > Number(item.price)" variant="success">Add to cart</b-button>
-                      <b-button v-else variant="secondary" disabled>Not enough points</b-button>
+                    <b-col v-if="!cartContainsItem(item.id)">
+                      <b-button v-if="Number(balance) >= Number(item.price)" variant="success" @click="addToCart({item, orgId})">Add to cart</b-button>
+                      <b-button v-if="Number(balance) < Number(item.price)" variant="secondary" disabled>Not enough points</b-button>
+                    </b-col>
+                    <b-col v-else>
+                      <b-button variant="success" disabled>Already in cart</b-button>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -45,20 +48,22 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   data () {
     return {
       items: [],
       balance: null,
-      orgName: ''
+      orgName: '',
+      orgId: null
     }
   },
   async fetch () {
     const catalog = await this.$http.$get('/api/catalogs/' + this.$route.params.catalogId + '/items')
     this.items = catalog.items
     this.orgName = catalog.organization.name
-    if (this.getUser.staffFor.map(elem => elem.id).includes(catalog.orgId) || this.getUser.isAdmin) {
+    this.orgId = catalog.organization.id
+    if (this.getUser.staffFor.map(elem => elem.id).includes(catalog.orgId)) {
       this.balance = 0
     } else {
       const points = await this.$http.$get('/api/users/' + this.getUser.id + '/' + catalog.orgId + '/points')
@@ -66,7 +71,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser', 'getHeaderImage'])
+    ...mapGetters(['getUser', 'getHeaderImage', 'getCart', 'cartContainsItem'])
+  },
+  methods: {
+    ...mapMutations(['addToCart', 'removeFromCart'])
   }
 }
 </script>

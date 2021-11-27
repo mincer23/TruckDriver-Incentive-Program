@@ -1,6 +1,8 @@
 export const state = () => ({
   session: null,
-  displayMode: 'light'
+  displayMode: 'light',
+  cart: [],
+  cartOrgId: null
 })
 
 export const mutations = {
@@ -10,6 +12,24 @@ export const mutations = {
 
   setDisplayMode (state, mode) {
     state.displayMode = mode
+  },
+
+  addToCart (state, { item, orgId }) {
+    state.cart.push(item)
+    state.cartOrgId = orgId
+  },
+
+  removeFromCart (state, itemId) {
+    const i = state.cart.map(item => item.id).indexOf(itemId)
+    state.cart.splice(i, 1)
+    if (state.cart.length === 0) {
+      state.cartOrgId = null
+    }
+  },
+
+  emptyCart (state) {
+    state.cart = []
+    state.cartOrgId = null
   }
 }
 
@@ -26,6 +46,24 @@ export const getters = {
     } else {
       return null
     }
+  },
+
+  getCart: (state) => {
+    return state.cart
+  },
+
+  // eslint-disable-next-line arrow-parens
+  cartContainsItem: (state) => (itemId) => {
+    const cartIds = state.cart.map(elem => elem.id)
+    if (cartIds.includes(itemId)) {
+      return true
+    } else {
+      return false
+    }
+  },
+
+  getCartOrgId: (state) => {
+    return state.cartOrgId
   }
 }
 

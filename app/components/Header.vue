@@ -16,6 +16,9 @@
       <b-nav-item to="/organizations/applications">
         Applications
       </b-nav-item>
+      <b-nav-item to="/catalogs/cart">
+        Cart <b-badge v-if="getCart.length > 0">{{ getCart.length }}</b-badge>
+      </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item-dropdown v-if="getUser" right>
@@ -56,7 +59,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser', 'getHeaderImage'])
+    ...mapGetters(['getUser', 'getHeaderImage', 'getCart'])
   }
 }
 </script>
