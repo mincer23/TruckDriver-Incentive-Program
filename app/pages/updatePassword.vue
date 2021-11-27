@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header page-title="Change Password" />
+    <Notification v-if="status" message="Updated password successfully." />
     <div class="card">
       <div class="card-body">
         <h2 class="card-title text-center">Change Password</h2>

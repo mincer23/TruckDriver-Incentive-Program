@@ -114,6 +114,7 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
   const email = req.body?.email || existingData.email
   const firstName = req.body?.firstName || existingData.firstName
   const lastName = req.body?.lastName || existingData.lastName
+  const passwordHash = req.body?.password ? await bcrypt.hash(req.body.password, 10) : existingData.passwordHash
 
   // update the user
   const result = await prisma.user.update({
@@ -124,7 +125,8 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
       userName,
       email,
       firstName,
-      lastName
+      lastName,
+      passwordHash
     },
     include: {
       driverFor: true,
