@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header page-title="Catalog" :header-image="getHeaderImage" />
+    <Header :page-title="orgName + '\'s Catalog'" :header-image="getHeaderImage" />
     <b-container>
       <b-row v-for="item in items" :key="item.id">
         <b-col cols="12">
@@ -50,12 +50,14 @@ export default {
   data () {
     return {
       items: [],
-      balance: null
+      balance: null,
+      orgName: ''
     }
   },
   async fetch () {
     const catalog = await this.$http.$get('/api/catalogs/' + this.$route.params.catalogId + '/items')
     this.items = catalog.items
+    this.orgName = catalog.organization.name
     if (this.getUser.staffFor.map(elem => elem.id).includes(catalog.orgId) || this.getUser.isAdmin) {
       this.balance = 0
     } else {

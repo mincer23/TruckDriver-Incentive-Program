@@ -11,7 +11,8 @@ router.get('/:id/items', ensureAuthenticated, async (req, res) => {
       id: Number(req.params.id)
     },
     include: {
-      items: true
+      items: true,
+      organization: true
     }
   })
   // catalog does not exist
