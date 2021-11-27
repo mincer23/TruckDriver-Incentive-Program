@@ -228,6 +228,27 @@ router.get('/:userId/transactions', async (req, res) => {
   res.json(userData.balances)
 })
 
+// get all the orders belonging to a user
+router.get('/:userId/orders', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  const result = await prisma.order.findMany({
+    where: {
+      user: {
+        id: userId
+      }
+    },
+    include: {
+      catalog: {
+        include: {
+          organization: true
+        }
+      },
+      items: true
+    }
+  })
+  res.json(result)
+})
+
 // get the points of a specific org balance belonging to a user
 router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // required fields

@@ -14,7 +14,7 @@
           <span>Points</span>
         </b-col>
       </NuxtLink>
-      <NuxtLink to="/orders" class="w-100 text-decoration-none text-white p-0 ml-4">
+      <NuxtLink :to="'/users/' + getUser.id + '/orders'" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Orders</span>
         </b-col>
