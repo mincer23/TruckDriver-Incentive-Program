@@ -13,7 +13,7 @@
       <b-nav-item :to="'/users/' + getUser.id">
         Profile
       </b-nav-item>
-      <b-nav-item to="/applications">
+      <b-nav-item to="/organizations/applications">
         Applications
       </b-nav-item>
     </b-navbar-nav>

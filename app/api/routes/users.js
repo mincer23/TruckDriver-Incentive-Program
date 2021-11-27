@@ -173,6 +173,22 @@ router.get('/profile/:id', ensureAuthenticated, async (req, res) => {
   }
 })
 
+// get all of a user's outgoing applications
+router.get('/:userId/applications', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  const result = await prisma.application.findMany({
+    where: {
+      user: {
+        id: userId
+      }
+    },
+    include: {
+      organization: true
+    }
+  })
+  res.json(result)
+})
+
 // get everything that has ever happened to a user ever
 router.get('/:userId/logs', ensureAuthenticated, async (req, res) => {
   const userId = Number(req.params.userId)

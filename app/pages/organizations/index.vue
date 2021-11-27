@@ -23,10 +23,13 @@
                     Founded: {{ new Date(org.created).toLocaleDateString("en-us") }}
                   </b-col>
                   <b-col>
-                    <b-button v-if="userIsDriverForOrg(org.id)" variant="success" disabled block>
+                    <b-button v-if="userIsDriverForOrg(org.id) && !userHasAppliedToOrg(org.id)" variant="success" disabled block>
                       Joined!
                     </b-button>
-                    <b-button v-else variant="primary" :to="'/organizations/' + org.id + '/apply'" block>
+                    <b-button v-if="!userIsDriverForOrg(org.id) && userHasAppliedToOrg(org.id)" variant="info" disabled block>
+                      Applied!
+                    </b-button>
+                    <b-button v-else variant="primary" @click="applyToOrg(org)" block>
                       Apply
                     </b-button>
                   </b-col>
@@ -47,6 +50,16 @@ export default {
     const organizations = await $http.$get('/api/organizations')
     return { organizations }
   },
+  data () {
+    return {
+      organizations: [],
+      userApplications: []
+    }
+  },
+  async fetch () {
+    this.organizations = await this.$http.$get('/api/organizations')
+    this.userApplications = await this.$http.$get('/api/users/' + this.getUser.id + '/applications')
+  },
   computed: {
     ...mapGetters([
       'getUser',
@@ -60,6 +73,25 @@ export default {
         return true
       } else {
         return false
+      }
+    },
+    userHasAppliedToOrg (orgId) {
+      const userAppOrgIds = this.userApplications.map(elem => elem.organization.id)
+      if (userAppOrgIds.includes(orgId)) { return true }
+      return false
+    },
+    async applyToOrg (org) {
+      org.state = false
+      const data = {
+        userId: this.getUser.id,
+        orgId: org.id
+      }
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const result = await this.$http.$post('/api/organizations/' + org.id + '/application', data)
+        this.$fetch()
+      } catch {
+        console.log('error')
       }
     }
   }

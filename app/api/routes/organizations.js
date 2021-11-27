@@ -311,6 +311,37 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   res.sendStatus(200)
 })
 
+// apply to an organization
+router.post('/:orgId/application', ensureAuthenticated, async (req, res) => {
+  // required fields
+  const userId = req.body?.userId ? Number(req.body.userId) : null
+  const orgId = Number(req.params.orgId)
+  if (!userId || !orgId) {
+    res.sendStatus(400)
+    return
+  }
+  const result = await prisma.application.create({
+    data: {
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      organization: {
+        connect: {
+          id: orgId
+        }
+      }
+    }
+  })
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
+// update an application
 router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
   if (!req.body.accept || typeof req.body.accept !== 'boolean') {
     res.sendStatus(400)
