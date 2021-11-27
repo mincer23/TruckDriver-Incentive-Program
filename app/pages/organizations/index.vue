@@ -22,7 +22,17 @@
                   <b-col>
                     Founded: {{ new Date(org.created).toLocaleDateString("en-us") }}
                   </b-col>
-                  <b-col>
+                  <b-col v-if="userIsStaffForOrg(org.id)">
+                    <b-row>
+                      <b-col>
+                        <b-button :to="'/organizations/manage/' + org.id" variant="info" block>Manage</b-button>
+                      </b-col>
+                      <b-col>
+                        <b-button :to="'/organizations/' + org.id" variant="secondary" block>View as Driver</b-button>
+                      </b-col>
+                    </b-row>
+                  </b-col>
+                  <b-col v-else>
                     <b-button v-if="userIsDriverForOrg(org.id) && !userHasAppliedToOrg(org.id)" variant="success" disabled block>
                       Joined!
                     </b-button>
@@ -79,6 +89,14 @@ export default {
       const userAppOrgIds = this.userApplications.map(elem => elem.organization.id)
       if (userAppOrgIds.includes(orgId)) { return true }
       return false
+    },
+    userIsStaffForOrg (orgId) {
+      const userStaffOrgIds = this.getUser?.staffFor.map(elem => elem.id)
+      if (userStaffOrgIds?.length > 0 && userStaffOrgIds.includes(orgId)) {
+        return true
+      } else {
+        return false
+      }
     },
     async applyToOrg (org) {
       org.state = false

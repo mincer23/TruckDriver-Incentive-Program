@@ -67,7 +67,10 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  async asyncData ({ $http, params }) {
+  async asyncData ({ $http, params, res }) {
+    if (!params?.id) {
+      res.redirect('/organizations')
+    }
     const orgData = await $http.$get('/api/organizations/' + params.id)
     return { orgData, orgId: params.id }
   },
