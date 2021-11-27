@@ -43,10 +43,10 @@
             >
           </div>
           <Notification class="error" v-if="password!=confirm" :message="error" />
-          <Notification class="error" v-if="strong==false && password!=''" :message="error_strong" />
+          <Notification class="error" v-if="strong!=true && password!=''" :message="error_strong" />
           <br>
           <div class="control">
-            <b-button :disabled="password!=confirm || strong==false" type="submit" class="button is-fullwidth">Update Password</b-button>
+            <b-button :disabled="password!=confirm || strong!=true" type="submit" class="button is-fullwidth">Update Password</b-button>
           </div>
         </form>
       </div>
