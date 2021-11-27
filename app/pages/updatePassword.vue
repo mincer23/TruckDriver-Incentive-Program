@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header page-title="Change Password" />
-    <Notification v-if="status" message="Updated password successfully." />
+    <Notification class="success" v-if="status" message="Updated password successfully." />
     <div class="card">
       <div class="card-body">
         <h2 class="card-title text-center">Change Password</h2>
@@ -21,6 +21,7 @@
             <label class="label">New Password</label>
             <input
               v-model="password"
+              v-on:input="isPasswordStrong"
               type="password"
               class="form-control"
               name="password"
@@ -41,8 +42,8 @@
               required
             >
           </div>
-          <Notification v-if="password!=confirm" :message="error" />
-          <Notification v-if="strong==false" :message="error_strong" />
+          <Notification class="error" v-if="password!=confirm" :message="error" />
+          <Notification class="error" v-if="strong==false && password!=''" :message="error_strong" />
           <br>
           <div class="control">
             <b-button :disabled="password!=confirm || strong==false" type="submit" class="button is-fullwidth">Update Password</b-button>
@@ -70,7 +71,7 @@ export default {
       oldpassword: '',
       error: 'Passwords do not match',
       error_strong: 'New password is too weak',
-      strong: null,
+      strong: false,
       status: null
     }
   },
@@ -78,6 +79,13 @@ export default {
     ...mapGetters(['getUser'])
   },
   methods: {
+    isPasswordStrong () {
+      if (zxcvbn(this.password).score > 2) {
+        this.strong = true
+      } else {
+        this.strong = false
+      }
+    },
     async updateUser (event) {
       event.preventDefault()
       try {
@@ -90,13 +98,6 @@ export default {
       } catch (e) {
         this.status = false
       }
-    },
-    isPasswordStrong () {
-      if (zxcvbn(this.password).score > 2) {
-        this.strong = true
-      } else {
-        this.strong = false
-      }
     }
   }
 }
@@ -108,11 +109,21 @@ export default {
   margin: auto;
   width: 500px;
 }
-.notification {
+.error {
   margin: 10px 0px;
   padding: 20px;
   color: #D8000C;
   background-color: #FFD2D2;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #888;
+  border-radius: .5em;
+  text-align: center;
+}
+.success {
+  margin: 10px 0px;
+  padding: 20px;
+  color: #4F8A10;
+  background-color: #DFF3BF;
   border: 1px solid;
   box-shadow: 1px 1px 3px #888;
   border-radius: .5em;
