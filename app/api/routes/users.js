@@ -249,6 +249,31 @@ router.get('/:userId/orders', ensureAuthenticated, async (req, res) => {
   res.json(result)
 })
 
+// modify an order
+router.put('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
+  const userId = Number(req.params.userId)
+  const orderId = Number(req.params.orderId)
+  console.log('fuck')
+  const status = req.body?.status ? String(req.body?.status) : null
+  if (!status || !userId || !orderId) {
+    res.sendStatus(400)
+    return
+  }
+  const result = await prisma.order.update({
+    where: {
+      id: orderId
+    },
+    data: {
+      status
+    }
+  })
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
 // get the points of a specific org balance belonging to a user
 router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // required fields

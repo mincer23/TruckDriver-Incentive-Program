@@ -50,8 +50,11 @@
               </b-row>
               <b-row>
                 <b-col>
-                  <b-button variant="secondary" :to="'/users/' + getUser.id + '/orders/' + order.id">
-                    Manage Order
+                  <b-button v-if="order.status !== 'CANCELLED'" variant="danger" @click="cancelOrder(order)">
+                    Cancel Order
+                  </b-button>
+                  <b-button v-else variant="secondary" disabled @click="cancelOrder(order)">
+                    Order already cancelled
                   </b-button>
                 </b-col>
               </b-row>
@@ -81,6 +84,20 @@ export default {
   },
   computed: {
     ...mapGetters(['getUser', 'getHeaderImage'])
+  },
+  methods: {
+    async cancelOrder (order) {
+      const data = {
+        status: 'CANCELLED'
+      }
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const result = await this.$http.$put('/api/users/' + this.getUser.id + '/order/' + order.id, data)
+        this.$fetch()
+      } catch {
+        console.log('error')
+      }
+    }
   }
 }
 </script>
