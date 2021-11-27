@@ -47,12 +47,21 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  async asyncData ({ $http, store, params }) {
-    const catalog = await $http.$get('/api/catalogs/' + params.catalogId + '/items')
-    const items = catalog.items
-    const points = await $http.$get('/api/users/' + store.state.session.id + '/' + catalog.orgId + '/points')
-    const balance = points.balance
-    return { items, balance }
+  data () {
+    return {
+      items: [],
+      balance: null
+    }
+  },
+  async fetch () {
+    const catalog = await this.$http.$get('/api/catalogs/' + this.$route.params.catalogId + '/items')
+    this.items = catalog.items
+    if (this.getUser.staffFor.map(elem => elem.id).includes(catalog.orgId) || this.getUser.isAdmin) {
+      this.balance = 0
+    } else {
+      const points = await this.$http.$get('/api/users/' + this.getUser.id + '/' + catalog.orgId + '/points')
+      this.balance = points.balance
+    }
   },
   computed: {
     ...mapGetters(['getUser', 'getHeaderImage'])
