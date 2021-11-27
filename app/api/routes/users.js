@@ -66,6 +66,13 @@ router.get('/:userId/catalogs', ensureAuthenticated, async (req, res) => {
           id: true,
           name: true
         }
+      },
+      staffFor: {
+        select: {
+          catalog: true,
+          id: true,
+          name: true
+        }
       }
     }
   })

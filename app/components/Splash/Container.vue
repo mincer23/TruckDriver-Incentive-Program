@@ -25,7 +25,7 @@
             </b-row>
             <b-row v-if="balances.length === 0" no-gutters>
               <b-col cols="12">
-                Not a member of any organization. <NuxtLink to="/organizations">Join one to get started!</NuxtLink>
+                Not a driver for any organization. <NuxtLink to="/organizations">Join one to get started!</NuxtLink>
               </b-col>
             </b-row>
           </b-container>

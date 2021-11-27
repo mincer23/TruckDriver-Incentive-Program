@@ -48,9 +48,15 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  async asyncData ({ $http, params }) {
-    const items = await $http.$get('https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr')
-    return { items: items.results, catalogId: Number(params.catalogId) }
+  fetchOnServer: false,
+  data () {
+    return {
+      items: [],
+      catalogId: Number(this.$route.params.catalogId)
+    }
+  },
+  async fetch () {
+    this.items = await this.$http.$get('/api/catalogs/etsyActive')
   },
   computed: {
     ...mapGetters(['getUser', 'getHeaderImage'])

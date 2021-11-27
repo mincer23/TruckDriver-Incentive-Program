@@ -58,6 +58,32 @@ router.post('/:id/item', ensureSponsor, async (req, res) => {
   res.json(result)
 })
 
+router.delete('/item/:itemId', ensureSponsor, async (req, res) => {
+  const itemId = req.params.itemId ? Number(req.params.itemId) : null
+  if (!itemId) {
+    res.sendStatus(400)
+    return
+  }
+  const result = await prisma.item.delete({
+    where: {
+      id: itemId
+    }
+  })
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
+// CORS bypass lmao
+router.get('/etsyActive', ensureAuthenticated, async (req, res) => {
+  const listings = await axios.get('https://openapi.etsy.com/v2/listings/active?api_key=vh0cf53nxhvc871sc5b2eabr')
+    .then(res => res.data)
+    .then(res => res.results)
+  res.json(listings)
+})
+
 // lazy load support to not make etsy want to die
 router.get('/image/:etsyId', ensureAuthenticated, async (req, res) => {
   const etsyId = String(req.params.etsyId)
