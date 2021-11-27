@@ -86,6 +86,7 @@
             <label class="label">Password</label>
             <input
               v-model="password"
+              v-on:input="isPasswordStrong"
               type="password"
               class="form-control form-control-lg"
               name="password"
@@ -120,8 +121,9 @@
             </b-form-checkbox>
           </div>
           <br>
-          <Notification v-if="email!=confirmemail" :message="email_error" />
-          <Notification v-if="password!=confirm" :message="error_password" />
+          <Notification class="error" v-if="email!=confirmemail" :message="email_error" />
+          <Notification class="error" v-if="password!=confirm" :message="error_password" />
+          <Notification class="error" v-if="strong!=true && password!=''" :message="error_strong" />
           <div class="login-link text-left">
             <NuxtLink to="/login">
               Already have an account?
@@ -134,7 +136,7 @@
           </div>
           <br>
           <div class="control">
-            <button :disabled="terms==='not_accepted'" type="submit" class="btn btn-primary btn-lg btn-square">
+            <button :disabled="terms==='not_accepted' || strong!=true" type="submit" class="btn btn-primary btn-lg btn-square">
               Register
             </button>
           </div>
@@ -148,7 +150,7 @@
 import { mapMutations } from 'vuex'
 import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
-
+import zxcvbn from '~/node_modules/zxcvbn'
 export default {
   components: {
     Notification,
@@ -166,10 +168,12 @@ export default {
       confirm: '',
       error_password: 'Passwords do not match',
       email_error: 'Emails do not match',
+      error_strong: 'Password is too weak',
       state: null,
       terms: 'not_accepted',
       accountType: null,
-      confirmemail: ''
+      confirmemail: '',
+      strong: null
 
     }
   },
@@ -195,6 +199,13 @@ export default {
           })
         })
       }
+    },
+    isPasswordStrong () {
+      if (zxcvbn(this.password).score > 2) {
+        this.strong = true
+      } else {
+        this.strong = false
+      }
     }
   }
 
@@ -207,7 +218,7 @@ export default {
   margin: auto;
   width: 500px;
 }
-.notification {
+.error {
   margin: 10px 0px;
   padding: 20px;
   color: #D8000C;
