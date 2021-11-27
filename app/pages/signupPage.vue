@@ -70,8 +70,6 @@
             >
           </div>
           <br>
-          <Notification v-if="email!=confirmemail" :message="email_error" />
-          <br>
           <div class="form-input">
             <label class="label">Username</label>
             <input
@@ -122,7 +120,8 @@
             </b-form-checkbox>
           </div>
           <br>
-          <Notification v-if="password!=confirm" :message="error" />
+          <Notification v-if="email!=confirmemail" :message="email_error" />
+          <Notification v-if="password!=confirm" :message="error_password" />
           <div class="login-link text-left">
             <NuxtLink to="/login">
               Already have an account?
@@ -165,7 +164,7 @@ export default {
       userName: '',
       password: '',
       confirm: '',
-      error: 'Check Passwords!',
+      error_password: 'Passwords do not match',
       email_error: 'Emails do not match',
       state: null,
       terms: 'not_accepted',
@@ -207,5 +206,15 @@ export default {
 .card {
   margin: auto;
   width: 500px;
+}
+.notification {
+  margin: 10px 0px;
+  padding: 20px;
+  color: #D8000C;
+  background-color: #FFD2D2;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #888;
+  border-radius: .5em;
+  text-align: center;
 }
 </style>
