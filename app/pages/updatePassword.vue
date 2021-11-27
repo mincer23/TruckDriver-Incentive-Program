@@ -13,6 +13,7 @@
               type="password"
               name="oldpassword"
               class="form-control"
+              required
             >
           </div>
           <br>
@@ -41,9 +42,10 @@
             >
           </div>
           <Notification v-if="password!=confirm" :message="error" />
+          <Notification v-if="strong==false" :message="error_strong" />
           <br>
           <div class="control">
-            <b-button type="submit" class="button is-fullwidth">Update Password</b-button>
+            <b-button :disabled="password!=confirm || strong==false" type="submit" class="button is-fullwidth">Update Password</b-button>
           </div>
         </form>
       </div>
@@ -55,6 +57,7 @@
 import { mapGetters } from 'vuex'
 import Password from '~/node_modules/vue-password-strength-meter'
 import Notification from '~/components/Notification'
+import zxcvbn from '~/node_modules/zxcvbn'
 export default {
   components: {
     Notification,
@@ -65,7 +68,9 @@ export default {
       password: '',
       confirm: '',
       oldpassword: '',
-      error: 'Check Passwords!',
+      error: 'Passwords do not match',
+      error_strong: 'New password is too weak',
+      strong: null,
       status: null
     }
   },
@@ -85,6 +90,13 @@ export default {
       } catch (e) {
         this.status = false
       }
+    },
+    isPasswordStrong () {
+      if (zxcvbn(this.password).score > 2) {
+        this.strong = true
+      } else {
+        this.strong = false
+      }
     }
   }
 }
@@ -95,5 +107,15 @@ export default {
 .card {
   margin: auto;
   width: 500px;
+}
+.notification {
+  margin: 10px 0px;
+  padding: 20px;
+  color: #D8000C;
+  background-color: #FFD2D2;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #888;
+  border-radius: .5em;
+  text-align: center;
 }
 </style>
