@@ -110,6 +110,22 @@
             >
           </div>
           <br>
+          <div class="question">
+            <label for="security-question">Select Your Security Question</label>
+            <select v-model="question" name="question" class="form-control" required>
+              <option value=null>Choose question...</option>
+              <option value="0">What was your first car?</option>
+              <option value="1">What was the name of your first pet?</option>
+              <option value="2">What high school did you attend?</option>
+              <option value="3">What is your dream job?</option>
+              <option value="4">What is the name of your favorite sports team?</option>
+            </select>
+          </div>
+          <br>
+          <div class="answer">
+            <label for="answer">Security Question Answer</label>
+            <input v-model="answer" type="text" class="form-control" placeholder="Type your answer..." required>
+          </div>
           <div>
             <b-form-checkbox
               v-model="terms"
@@ -166,6 +182,8 @@ export default {
       userName: '',
       password: '',
       confirm: '',
+      question: null,
+      answer: '',
       error_password: 'Passwords do not match',
       email_error: 'Emails do not match',
       error_strong: 'Password is too weak',
@@ -174,7 +192,6 @@ export default {
       accountType: null,
       confirmemail: '',
       strong: null
-
     }
   },
   methods: {
@@ -186,7 +203,9 @@ export default {
         password: this.password,
         email: this.email,
         firstName: this.firstName,
-        lastName: this.lastName
+        lastName: this.lastName,
+        question: this.question,
+        answer: this.answer
       }
       const result = await this.$http.$post('/api/users', data)
       this.state = !!result
