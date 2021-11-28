@@ -55,7 +55,14 @@ router.post('/', async (req, res) => {
       lastName,
       secretQuestion: Number(question),
       secretAnswerHash: await bcrypt.hash(answer, 10),
-      isAdmin
+      isAdmin,
+      logs: {
+        create: {
+          ipAddress: String(req.ip),
+          modelName: 'USER',
+          accessType: 'CREATE'
+        }
+      }
     }
   })
   if (await newUser) { // create query was successful
@@ -135,7 +142,14 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
       email,
       firstName,
       lastName,
-      passwordHash
+      passwordHash,
+      logs: {
+        create: {
+          ipAddress: String(req.ip),
+          modelName: 'USER',
+          accessType: 'MODIFY'
+        }
+      }
     },
     include: {
       driverFor: true,
@@ -498,7 +512,14 @@ router.post('/forgotPassword', async (req, res) => {
         userName
       },
       data: {
-        passwordHash: await bcrypt.hash(newPassword, 10)
+        passwordHash: await bcrypt.hash(newPassword, 10),
+        logs: {
+          create: {
+            ipAddress: String(req.ip),
+            modelName: 'USER',
+            accessType: 'MODIFY'
+          }
+        }
       },
       include: {
         driverFor: true,

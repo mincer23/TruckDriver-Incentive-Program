@@ -57,6 +57,21 @@ app.post('/login', async (req, res) => {
         req.session.user = userData
         res.json(userData)
       } else { // bad password
+        // eslint-disable-next-line no-unused-vars
+        const badPasswordResult = await prisma.user.update({
+          where: {
+            id: userData.id
+          },
+          data: {
+            logs: {
+              create: {
+                modelName: 'USER',
+                accessType: 'MODIFY',
+                ipAddress: req.ip
+              }
+            }
+          }
+        })
         res.sendStatus(400)
       }
     } else { // no user found
