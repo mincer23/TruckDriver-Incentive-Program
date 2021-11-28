@@ -1,5 +1,5 @@
 import { prisma } from './prisma.js'
-import { comparePassword } from './utilities.js'
+import { comparePassword, ensureAdmin } from './utilities.js'
 
 const express = require('express')
 const session = require('express-session')
@@ -90,6 +90,21 @@ app.post('/updateStatus', async (req, res) => {
 
 app.get('/session', (req, res) => {
   res.json(req.session.user)
+})
+
+app.get('/events', ensureAdmin, async (req, res) => {
+  const events = await prisma.logEvent.findMany({
+    include: {
+      user: true,
+      transaction: true,
+      balance: {
+        include: {
+          organization: true
+        }
+      }
+    }
+  }) // yes, this is in earnest.
+  res.json(events)
 })
 
 // Register the app handler with Nuxt

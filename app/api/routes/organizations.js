@@ -23,6 +23,29 @@ router.get('/:id/events', async (req, res) => {
   res.json(result)
 })
 
+// a different approach that's useful for us in admin page
+router.get('/transactions', async (req, res) => {
+  const result = await prisma.organization.findMany({
+    include: {
+      drivers: {
+        select: {
+          logs: {
+            where: {
+              transactionId: {
+                not: null
+              }
+            }
+          },
+          firstName: true,
+          lastName: true,
+          id: true
+        }
+      }
+    }
+  })
+  res.json(result)
+})
+
 // get all organizations (used for search/browsing)
 router.get('/', ensureAuthenticated, async (req, res) => {
   const result = await prisma.organization.findMany({
