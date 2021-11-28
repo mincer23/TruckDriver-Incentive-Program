@@ -4,6 +4,7 @@
     <b-container>
       <b-row>
         <b-col>
+          <b-form-select v-model="priorityDriver" :options="drivers" />
           <b-card title="Driver Point Changes">
             <b-table striped hover :items="realData" />
           </b-card>
@@ -18,7 +19,8 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      pointEvents: []
+      pointEvents: [],
+      priorityDriver: null
     }
   },
   async fetch () {
@@ -30,7 +32,11 @@ export default {
       return this.getUser.staffFor[0].id
     },
     realData () {
-      return this.pointEvents.map(elem => Object({
+      let data = this.pointEvents
+      if (this.priorityDriver) {
+        data = this.pointEvents.filter(elem => elem.user.id === this.priorityDriver)
+      }
+      return data.map(elem => Object({
         driver_name: String(elem.user.firstName + ' ' + elem.user.lastName),
         total_points: elem.balance.balance,
         date_of_change: new Date(elem.time).toLocaleDateString(),
@@ -38,6 +44,14 @@ export default {
         point_change: Number(Number(elem.newValue) - Number(elem.oldValue)),
         reason: elem.reason ? (elem.reason === '' ? 'Manual Adjustment' : elem.reason) : 'Item Purchase'
       }))
+    },
+    drivers () {
+      const drivers = this.pointEvents.map(elem => Object({
+        value: elem.user.id,
+        text: String(elem.user.firstName + ' ' + elem.user.lastName)
+      }))
+      drivers.push({ value: null, text: 'Filter by driver...' })
+      return drivers
     }
   }
 }
