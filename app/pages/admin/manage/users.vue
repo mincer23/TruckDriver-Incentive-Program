@@ -18,9 +18,6 @@
                 <b-col>
                   <b-button v-b-toggle="'points-' + user.id" variant="info">Adjust Points</b-button>
                 </b-col>
-                <b-col>
-                  <b-button variant="danger">Delete User</b-button>
-                </b-col>
               </b-row>
               <b-collapse :id="'info-' + user.id">
                 <b-row>
