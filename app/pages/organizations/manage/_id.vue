@@ -151,7 +151,7 @@
               <Notification class="error" v-if="strong!=true && password!=''" :message="error_strong" />
               <Notification v-if="status" class="success" :message="success_newUser" />
               <b-button :disabled="password!=confirm || strong!=true || email!=confirmEmail" type="submit" variant="primary" class="button is-fullwidth">
-                Update Password
+                Create User
               </b-button>
             </b-form>
           </b-card>
@@ -225,7 +225,7 @@ export default {
     async createStaff (event) {
       event.preventDefault()
       const data = {
-        userName: this.userName,
+        userName: this.username,
         password: this.password,
         email: this.email,
         firstName: this.firstName,
