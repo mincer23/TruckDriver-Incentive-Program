@@ -64,6 +64,11 @@
             </div>
           </form>
           </div>
+          <div class="updatePassword text-center">
+            <NuxtLink to="/updatePassword">
+              Need to change your password?
+            </NuxtLink>
+          </div>
         </div>
       </div>
   </section>
