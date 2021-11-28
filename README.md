@@ -13,7 +13,8 @@ Nuxt, the Vue framework we're using, supports hot-reloading in development mode.
 To run in dev mode, clone the repo to your local machine and run:
 1. `cd app`
 2. `npm install`
-3. `npm run dev`
+3. `npx prisma generate`
+4. `npm run dev`
 
 This will start a development server on 
 `localhost:3000` by default. Any changes you make will appear live. Do keep in
@@ -21,6 +22,9 @@ mind that any data will actually still be data from the "production" database,
 so nuking stuff may have unforseen consequences.
 
 # Build procedure
-1. `npm run build`
-2. `npm run start`
-3. Hope it doesn't break
+1. `cd app`
+2. `npm install`
+3. `npx prisma generate`
+4. `npm run build`
+5. `npm run start`
+6. Hope it doesn't break
