@@ -4,6 +4,11 @@
       <b-col cols="12" class="ml-4 pb-5">
         <h4>Menu</h4>
       </b-col>
+      <NuxtLink v-if="getUser.isAdmin" to="/admin" class="w-100 text-decoration-none text-white p-0 ml-4">
+        <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
+          <span>Admin Panel</span>
+        </b-col>
+      </NuxtLink>
       <NuxtLink to="/" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Dashboard</span>

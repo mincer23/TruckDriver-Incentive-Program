@@ -16,7 +16,7 @@
                   </b-button>
                 </b-col>
                 <b-col cols="1">
-                  <b-button variant="danger" block @click.prevent="removeDriver(driver.id, driver.firstName + ' ' + driver.lastName)">
+                  <b-button variant="danger" block @click.prevent="removeDriver(driver.id)">
                     Kick
                   </b-button>
                 </b-col>
