@@ -174,7 +174,7 @@ export default {
       this.state = !!result
       if (this.state) {
         this.$nextTick(() => {
-          this.$router.push('/admin/manage')
+          this.$router.push('/admin')
         })
       }
     },
