@@ -25,7 +25,7 @@ router.get('/:id/events', async (req, res) => {
 
 // a different approach that's useful for us in admin page
 router.get('/transactions', async (req, res) => {
-  const result = await prisma.organization.findMany({
+  const transactions = await prisma.organization.findMany({
     include: {
       drivers: {
         select: {
@@ -43,7 +43,37 @@ router.get('/transactions', async (req, res) => {
       }
     }
   })
-  res.json(result)
+  const purchaseCounts = await prisma.item.findMany({
+    select: {
+      _count: {
+        select: {
+          orders: true
+        }
+      },
+      price: true,
+      name: true
+    }
+  })
+  const driverPurchases = await prisma.user.findMany({
+    include: {
+      orders: {
+        include: {
+          event: true,
+          catalog: {
+            include: {
+              organization: true
+            }
+          },
+          _count: {
+            select: {
+              items: true
+            }
+          }
+        }
+      }
+    }
+  })
+  res.json({ transactions, purchaseCounts, driverPurchases })
 })
 
 // get all organizations (used for search/browsing)
