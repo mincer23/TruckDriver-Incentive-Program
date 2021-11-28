@@ -16,6 +16,15 @@
                 <b-col cols="12" class="d-flex justify-content-center py-3">
                   <b-button variant="primary" to="/admin/manage/catalogs">Manage Catalogs</b-button>
                 </b-col>
+                <b-col cols="12" class="d-flex justify-content-center py-3">
+                  <b-button variant="primary" to="/admin/manage/createAdmin">Add Admin User</b-button>
+                </b-col>
+                <b-col cols="12" class="d-flex justify-content-center py-3">
+                  <b-button variant="primary" to="/admin/manage/createDriver">Add Driver User</b-button>
+                </b-col>
+                <b-col cols="12" class="d-flex justify-content-center py-3">
+                  <b-button variant="primary" to="/admin/manage/reports">View Reports</b-button>
+                </b-col>
               </b-row>
             </b-container>
           </b-card>
