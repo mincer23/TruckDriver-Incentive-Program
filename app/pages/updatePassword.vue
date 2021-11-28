@@ -90,7 +90,7 @@ export default {
       event.preventDefault()
       try {
         // eslint-disable-next-line no-unused-vars
-        const update = await this.$http.$put('/api/users/' + this.getUser.id, {
+        const update = await this.$http.$post('/api/users/' + this.getUser.id, {
           password: this.password,
           oldpassword: this.oldpassword
         })

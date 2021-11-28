@@ -79,7 +79,7 @@ export default {
       }
       try {
         // eslint-disable-next-line no-unused-vars
-        const result = await this.$http.$put('/api/users/' + this.userId, data)
+        const result = await this.$http.$post('/api/users/' + this.userId, data)
         this.$emit('update')
       } catch {
         this.state = false

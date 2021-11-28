@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     async handleApplication (appId, accept = true) {
-      const result = await this.$http.$put('/api/organizations/' + this.orgId + '/applications/' + appId, { accept })
+      const result = await this.$http.$post('/api/organizations/' + this.orgId + '/applications/' + appId, { accept })
       if (result && accept) {
         alert('Successfully accepted application!')
       } else if (result && !accept) {

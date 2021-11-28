@@ -100,7 +100,7 @@ export default {
         oldpassword: this.confirm
       }
       try {
-        const result = await this.$http.$put('/api/users/' + this.getUser.id, data)
+        const result = await this.$http.$post('/api/users/' + this.getUser.id, data)
         this.setUser(result)
         this.$nextTick(() => {
           this.$router.push('/')

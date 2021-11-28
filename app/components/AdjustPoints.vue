@@ -67,7 +67,7 @@ export default {
       }
       try {
         // eslint-disable-next-line no-unused-vars
-        const result = await this.$http.$put('/api/users/' + this.userId + '/' + orgId + '/points', data)
+        const result = await this.$http.$post('/api/users/' + this.userId + '/' + orgId + '/points', data)
         console.log(result)
         this.$fetch()
       } catch {

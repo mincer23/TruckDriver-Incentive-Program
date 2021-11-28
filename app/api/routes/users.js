@@ -107,7 +107,7 @@ router.get('/:userId/catalogs', ensureAuthenticated, async (req, res) => {
 })
 
 // update a user
-router.put('/:id', ensureAuthenticated, async (req, res) => {
+router.post('/:id', ensureAuthenticated, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
@@ -355,7 +355,7 @@ router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
 })
 
 // modify an order
-router.put('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
+router.post('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
@@ -409,7 +409,7 @@ router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
 
 // commit a point change to a user
 // `change` field in PUT data should be positive for addition, negative for subtraction.
-router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
+router.post('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')

@@ -234,7 +234,7 @@ export default {
     async uploadHeaderImage (event) {
       event.preventDefault()
       const formdata = new FormData(event.target)
-      const result = await this.$http.$put('/api/organizations/' + this.orgId, formdata)
+      const result = await this.$http.$post('/api/organizations/' + this.orgId, formdata)
       if (result) {
         alert('Successfully uploaded new header image!  You may have to login and logout to see this change.')
       }

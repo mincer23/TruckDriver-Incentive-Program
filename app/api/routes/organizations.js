@@ -212,7 +212,7 @@ router.post('/:orgId/user', ensureSponsor, async (req, res) => {
 })
 
 // update organization info (including header image)
-router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, res) => {
+router.post('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
@@ -472,7 +472,7 @@ router.post('/:orgId/application', ensureAuthenticated, async (req, res) => {
 })
 
 // update an application
-router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
+router.post('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
