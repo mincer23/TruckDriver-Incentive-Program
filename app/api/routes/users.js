@@ -266,7 +266,6 @@ router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
   const orgId = req.body?.orgId ? Number(req.body.orgId) : null
   const items = req.body?.items
   if (!items || !userId || !orgId || items?.length === 0) {
-    console.log(orgId)
     res.sendStatus(400)
     return
   }
@@ -275,7 +274,6 @@ router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
       userId_orgId: { userId, orgId }
     }
   })
-  console.log(balance.balance)
   const totalCostOfItems = await items.reduce((previous, currentelem) => previous + Number(currentelem.price), 0)
   if (!balance || balance.balance < totalCostOfItems) {
     res.sendStatus(400)

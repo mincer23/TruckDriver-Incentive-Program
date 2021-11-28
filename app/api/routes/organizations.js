@@ -314,6 +314,7 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   // required params
   if (!(req.params.orgId && req.params.staffId)) {
     res.sendStatus(400)
+    return
   }
 
   // make our params just a little easier to work with
@@ -342,8 +343,9 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   const staffOrgIds = staffOrgs.staffFor.map(elem => elem.id)
   const requesterOrgIds = requesterOrgs.staffFor.map(elem => elem.id)
   // if the requester is a manager for an org that the driver belongs to
-  if (!(requesterOrgIds.includes(orgId) && staffOrgIds.includes(orgId))) {
+  if (!(requesterOrgIds.includes(orgId) && staffOrgIds.includes(orgId)) && !req.session.user.isAdmin) {
     res.sendStatus(400)
+    return
   }
   // remove user from org
   const orgDelete = await prisma.organization.update({
@@ -360,6 +362,7 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   })
   if (!orgDelete) {
     res.sendStatus(500)
+    return
   }
 
   res.sendStatus(200)
@@ -397,9 +400,6 @@ router.post('/:orgId/application', ensureAuthenticated, async (req, res) => {
 
 // update an application
 router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
-  if (!req.body.accept || typeof req.body.accept !== 'boolean') {
-    res.sendStatus(400)
-  }
   const result = await prisma.application.update({
     where: {
       id: Number(req.params.appId)
@@ -426,6 +426,7 @@ router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
     })
     if (!addUser) {
       res.sendStatus(400)
+      return
     }
   }
   if (result) {

@@ -95,6 +95,9 @@ export default {
       return false
     },
     userIsStaffForOrg (orgId) {
+      if (this.getUser.isAdmin) {
+        return true
+      }
       const userStaffOrgIds = this.getUser?.staffFor.map(elem => elem.id)
       if (userStaffOrgIds?.length > 0 && userStaffOrgIds.includes(orgId)) {
         return true

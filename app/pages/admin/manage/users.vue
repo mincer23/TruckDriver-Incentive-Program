@@ -32,7 +32,7 @@
               <b-collapse :id="'points-' + user.id">
                 <b-row>
                   <b-col>
-                    <AdjustPoints :user-id="user.id" />
+                    <AdjustPoints :user-id="Number(user.id)" />
                   </b-col>
                 </b-row>
               </b-collapse>

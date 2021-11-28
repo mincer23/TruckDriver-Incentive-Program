@@ -33,13 +33,14 @@
 
 <script>
 export default {
+  fetchOnServer: false,
   props: {
     userId: {
       type: Number,
       required: true
     },
     thisOrg: {
-      type: Object,
+      type: Number,
       required: false,
       default: null
     }
@@ -53,7 +54,6 @@ export default {
   async fetch () {
     if (this.thisOrg) {
       this.balances = [await this.$http.$get('/api/users/' + this.userId + '/' + this.thisOrg + '/points')]
-      console.log(this.balances)
     } else {
       this.balances = await this.$http.$get('/api/users/' + this.userId + '/transactions')
     }

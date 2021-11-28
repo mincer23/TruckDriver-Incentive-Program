@@ -22,7 +22,7 @@
                 </b-col>
                 <b-collapse :id="'points-' + driver.id">
                   <b-col cols="12">
-                    <AdjustPoints :user-id="driver.id" :this-org="orgId" />
+                    <AdjustPoints :user-id="Number(driver.id)" :this-org="Number(orgId)" />
                   </b-col>
                 </b-collapse>
               </b-row>
@@ -208,18 +208,18 @@ export default {
   },
   methods: {
     update () {
-      this.$fetch()
+      this.$refresh()
     },
-    async removeDriver (id, fullName) {
+    async removeDriver (id) {
       const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/driver/' + id)
       if (result) {
-        alert('Successfully removed driver: ' + fullName)
+        this.update()
       }
     },
-    async removeStaff (id, fullName) {
+    async removeStaff (id) {
       const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/staff/' + id)
       if (result) {
-        alert('Successfully removed staff: ' + fullName)
+        this.update()
       }
     },
     async uploadHeaderImage (event) {
@@ -227,7 +227,7 @@ export default {
       const formdata = new FormData(event.target)
       const result = await this.$http.$put('/api/organizations/' + this.orgId, formdata)
       if (result) {
-        alert('Successfully uploaded new header image!')
+        alert('Successfully uploaded new header image!  You may have to login and logout to see this change.')
       }
     },
     async createStaff (event) {
