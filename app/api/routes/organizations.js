@@ -216,6 +216,7 @@ router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, r
   // did they even give us anything to update
   if ((!req.file && !req.body.name) || !req.params.orgId) {
     res.sendStatus(400)
+    return
   }
 
   // is the org they asked for even real
@@ -226,12 +227,7 @@ router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, r
 
   if (!orgData) {
     res.sendStatus(404) // not found
-  }
-
-  // make sure the person submitting is allowed to change this
-  const validUsers = orgData.staff.map(elem => elem.id)
-  if (!validUsers.includes(req.session.user.id)) {
-    res.sendStatus(403)
+    return
   }
 
   const result = await prisma.organization.update({
