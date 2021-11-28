@@ -1,6 +1,7 @@
 import validator from 'validator'
 import { prisma } from '../prisma.js'
-import { ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
+import { isPasswordStrong, ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
+const bcrypt = require('bcrypt')
 const express = require('express')
 const upload = require('multer')({ dest: 'static/uploads/' })
 const router = express.Router()
@@ -86,6 +87,59 @@ router.post('/', ensureAuthenticated, async (req, res) => {
     }
   } else {
     res.sendStatus(400)
+  }
+})
+
+router.post('/:orgId/user', ensureSponsor, async (req, res) => {
+  const orgId = req.params?.orgId
+  const userName = req.body?.userName
+  const password = req.body?.password
+  const email = req.body?.email
+  const firstName = req.body?.firstName
+  const lastName = req.body?.lastName
+  const question = req.body?.question
+  const answer = req.body?.answer
+  // do we have all required fields
+  if (!userName || !password || !email || !firstName || !lastName || typeof question === 'undefined' || !answer) {
+    res.sendStatus(400)
+    return
+  }
+  // does username or email already exist
+  // have to destructure because findMany always gives back a list
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { userName },
+        { email }
+      ]
+    }
+  })
+  // yes
+  if (existingUser) {
+    res.sendStatus(400)
+    return
+  }
+  // no
+  const newUser = await prisma.user.create({
+    data: {
+      userName,
+      passwordHash: await bcrypt.hash(password, 10),
+      email,
+      firstName,
+      lastName,
+      staffFor: {
+        connect: {
+          id: Number(orgId)
+        }
+      },
+      secretQuestion: Number(question),
+      secretAnswerHash: await bcrypt.hash(answer, 10)
+    }
+  })
+  if (await newUser) { // create query was successful
+    res.sendStatus(200)
+  } else { // something broke on our end
+    res.sendStatus(500)
   }
 })
 

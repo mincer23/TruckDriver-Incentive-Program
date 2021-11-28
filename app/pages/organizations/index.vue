@@ -25,10 +25,14 @@
                   <b-col v-if="userIsStaffForOrg(org.id)">
                     <b-row>
                       <b-col>
-                        <b-button :to="'/organizations/manage/' + org.id" variant="info" block>Manage</b-button>
+                        <b-button :to="'/organizations/manage/' + org.id" variant="info" block>
+                          Manage
+                        </b-button>
                       </b-col>
                       <b-col>
-                        <b-button :to="'/organizations/' + org.id" variant="secondary" block>View as Driver</b-button>
+                        <b-button :to="'/organizations/' + org.id" variant="secondary" block>
+                          View as Driver
+                        </b-button>
                       </b-col>
                     </b-row>
                   </b-col>
@@ -39,7 +43,7 @@
                     <b-button v-if="!userIsDriverForOrg(org.id) && userHasAppliedToOrg(org.id)" variant="info" disabled block>
                       Applied!
                     </b-button>
-                    <b-button v-else variant="primary" @click="applyToOrg(org)" block>
+                    <b-button v-else variant="primary" block @click="applyToOrg(org)">
                       Apply
                     </b-button>
                   </b-col>

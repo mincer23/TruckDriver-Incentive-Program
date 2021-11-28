@@ -1,22 +1,33 @@
 import { prisma } from '../prisma.js'
-import { comparePassword, ensureAuthenticated, isPasswordStrong } from '../utilities.js'
+import { comparePassword, ensureAuthenticated, ensureAdmin, isPasswordStrong } from '../utilities.js'
 const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
 
+// get all users
+router.get('/', ensureAdmin, async (req, res) => {
+  const result = await prisma.user.findMany()
+  res.json(result)
+})
+
+// create a new user
 router.post('/', async (req, res) => {
   const userName = req.body?.userName
   const password = req.body?.password
   const email = req.body?.email
   const firstName = req.body?.firstName
   const lastName = req.body?.lastName
+  const question = req.body?.question
+  const answer = req.body?.answer
   // do we have all required fields
-  if (!(userName && password && email && firstName && lastName)) {
+  if (!(userName && password && email && firstName && lastName && question && answer)) {
     res.sendStatus(400)
+    return
   }
   // is the password strong enough
   if (!isPasswordStrong(password)) {
     res.sendStatus(400)
+    return
   }
   // does username or email already exist
   // have to destructure because findMany always gives back a list
@@ -31,6 +42,7 @@ router.post('/', async (req, res) => {
   // yes
   if (existingUser) {
     res.sendStatus(400)
+    return
   }
   // no
   const newUser = await prisma.user.create({
@@ -39,7 +51,9 @@ router.post('/', async (req, res) => {
       passwordHash: await bcrypt.hash(password, 10),
       email,
       firstName,
-      lastName
+      lastName,
+      secretQuestion: Number(question),
+      secretAnswerHash: await bcrypt.hash(answer, 10)
     }
   })
   if (await newUser) { // create query was successful
