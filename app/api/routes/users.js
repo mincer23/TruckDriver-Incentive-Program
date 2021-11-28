@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
   const lastName = req.body?.lastName
   const question = req.body?.question
   const answer = req.body?.answer
+  const isAdmin = req.body?.isAdmin && req?.session?.user?.isAdmin
   // do we have all required fields
   if (!(userName && password && email && firstName && lastName && question && answer)) {
     res.sendStatus(400)
@@ -53,7 +54,8 @@ router.post('/', async (req, res) => {
       firstName,
       lastName,
       secretQuestion: Number(question),
-      secretAnswerHash: await bcrypt.hash(answer, 10)
+      secretAnswerHash: await bcrypt.hash(answer, 10),
+      isAdmin
     }
   })
   if (await newUser) { // create query was successful
