@@ -11,7 +11,7 @@
                   {{ driver.firstName + ' ' + driver.lastName }}
                 </b-col>
                 <b-col cols="3">
-                  <b-button block>
+                  <b-button v-b-toggle="'points-' + driver.id" block>
                     Adjust Points
                   </b-button>
                 </b-col>
@@ -20,6 +20,11 @@
                     Kick
                   </b-button>
                 </b-col>
+                <b-collapse :id="'points-' + driver.id">
+                  <b-col cols="12">
+                    <AdjustPoints :user-id="driver.id" :this-org="orgId" />
+                  </b-col>
+                </b-collapse>
               </b-row>
             </b-container>
           </b-card>
@@ -202,6 +207,9 @@ export default {
     ...mapGetters(['getUser', 'getHeaderImage'])
   },
   methods: {
+    update () {
+      this.$fetch()
+    },
     async removeDriver (id, fullName) {
       const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/driver/' + id)
       if (result) {

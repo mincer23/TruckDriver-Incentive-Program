@@ -13,15 +13,29 @@
                   </NuxtLink>
                 </b-col>
                 <b-col>
-                  <b-button variant="primary">Edit User Info</b-button>
+                  <b-button v-b-toggle="'info-' + user.id" variant="primary">Edit User Info</b-button>
                 </b-col>
                 <b-col>
-                  <b-button variant="info">Adjust Points</b-button>
+                  <b-button v-b-toggle="'points-' + user.id" variant="info">Adjust Points</b-button>
                 </b-col>
                 <b-col>
                   <b-button variant="danger">Delete User</b-button>
                 </b-col>
               </b-row>
+              <b-collapse :id="'info-' + user.id">
+                <b-row>
+                  <b-col>
+                    <EditUserInfo :user-id="user.id" @update="update" />
+                  </b-col>
+                </b-row>
+              </b-collapse>
+              <b-collapse :id="'points-' + user.id">
+                <b-row>
+                  <b-col>
+                    <AdjustPoints :user-id="user.id" />
+                  </b-col>
+                </b-row>
+              </b-collapse>
             </b-container>
           </b-card>
         </b-col>
@@ -39,6 +53,11 @@ export default {
   },
   async fetch () {
     this.users = await this.$http.$get('/api/users')
+  },
+  methods: {
+    update () {
+      this.$fetch()
+    }
   }
 }
 </script>

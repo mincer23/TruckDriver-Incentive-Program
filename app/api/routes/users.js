@@ -116,13 +116,6 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
     return
   }
 
-  // if provided old password does not match
-  const oldPassMatches = await bcrypt.compare(req.body?.oldpassword, existingData.passwordHash)
-  if (!oldPassMatches) {
-    res.sendStatus(400)
-    return
-  }
-
   // let's only take the data we want to update
   const userName = req.body?.userName || existingData.userName
   const email = req.body?.email || existingData.email
@@ -348,7 +341,6 @@ router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
 router.put('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
   const userId = Number(req.params.userId)
   const orderId = Number(req.params.orderId)
-  console.log('fuck')
   const status = req.body?.status ? String(req.body?.status) : null
   if (!status || !userId || !orderId) {
     res.sendStatus(400)
@@ -383,7 +375,8 @@ router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
       userId_orgId: { userId, orgId }
     },
     select: {
-      balance: true
+      balance: true,
+      organization: true
     }
   })
 
@@ -401,8 +394,10 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   const userId = Number(req.params.userId)
   const orgId = Number(req.params.orgId)
   const change = Number(req.body.change)
+  const reason = req.body.reason
   if (!userId || !orgId || !change) {
     res.sendStatus(400)
+    return
   }
   // validate that the user in question exists
   const currentPoints = await prisma.points.findUnique({
@@ -413,6 +408,7 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // no user found
   if (!currentPoints) {
     res.sendStatus(400)
+    return
   }
   // verify that initiator user is either admin or staff for this org
   const staffUsers = await prisma.user.findMany({
@@ -427,6 +423,7 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // initiator not admin and not staff in this org
   if (!staffIds.includes(Number(req.session.user.id)) && !req.session.user.isAdmin) {
     res.sendStatus(400)
+    return
   }
 
   const requestedChange = Number(req.body.change)
@@ -434,6 +431,7 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
   // cannot adjust points into the negative. if delta negative and abs > current:
   if (requestedChange < 0 && currentPoints.balance < Math.abs(requestedChange)) {
     res.sendStatus(400)
+    return
   }
   // all checks passed, perform update
   const result = await prisma.points.update({
@@ -441,7 +439,21 @@ router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
       userId_orgId: { userId, orgId }
     },
     data: {
-      balance: Number(currentPoints.balance) + requestedChange
+      balance: Number(currentPoints.balance) + requestedChange,
+      events: {
+        create: {
+          user: {
+            connect: {
+              id: userId
+            }
+          },
+          ipAddress: req.ip,
+          reason,
+          accessType: 'MODIFY',
+          oldValue: String(Number(currentPoints.balance)),
+          newValue: String(Number(currentPoints.balance) + requestedChange)
+        }
+      }
     }
   })
   if (result) {

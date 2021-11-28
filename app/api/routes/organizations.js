@@ -1,6 +1,6 @@
 import validator from 'validator'
 import { prisma } from '../prisma.js'
-import { isPasswordStrong, ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
+import { ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
 const bcrypt = require('bcrypt')
 const express = require('express')
 const upload = require('multer')({ dest: 'static/uploads/' })
