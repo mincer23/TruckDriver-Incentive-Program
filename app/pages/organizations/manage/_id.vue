@@ -217,7 +217,7 @@ export default {
   },
   methods: {
     update () {
-      this.$refresh()
+      this.$fetch()
     },
     async removeDriver (id) {
       const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/driver/' + id)

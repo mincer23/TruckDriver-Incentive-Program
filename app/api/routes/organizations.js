@@ -7,10 +7,7 @@ const upload = require('multer')({ dest: 'static/uploads/' })
 const router = express.Router()
 
 router.get('/:id/events', async (req, res) => {
-  const result = await prisma.logEvent.findMany({
-    where: {
-      id: Number(req.params.id)
-    },
+  const query = await prisma.logEvent.findMany({
     include: {
       user: true,
       balance: {
@@ -20,6 +17,7 @@ router.get('/:id/events', async (req, res) => {
       }
     }
   })
+  const result = query.filter(elem => elem?.balance?.organization.id === Number(req.params.id))
   res.json(result)
 })
 

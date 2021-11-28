@@ -37,7 +37,7 @@ export default {
   computed: {
     ...mapGetters(['getUser']),
     orgId () {
-      return this.getUser.staffFor[0].id
+      return this.getUser?.staffFor[0]?.id
     },
     realData () {
       let data = this.pointEvents
@@ -46,9 +46,9 @@ export default {
       }
       return data.map(elem => Object({
         driver_name: String(elem.user.firstName + ' ' + elem.user.lastName),
-        total_points: elem.balance.balance,
+        total_points: elem?.balance.balance,
         date_of_change: new Date(elem.time).toLocaleDateString(),
-        name_of_changer: elem.balance.organization.name,
+        name_of_changer: elem?.balance.organization.name,
         point_change: Number(Number(elem.newValue) - Number(elem.oldValue)),
         reason: elem.reason ? (elem.reason === '' ? 'Manual Adjustment' : elem.reason) : 'Item Purchase'
       }))
