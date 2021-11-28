@@ -213,6 +213,9 @@ router.post('/:orgId/user', ensureSponsor, async (req, res) => {
 
 // update organization info (including header image)
 router.put('/:orgId', ensureSponsor, upload.single('headerImage'), async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   // did they even give us anything to update
   if ((!req.file && !req.body.name) || !req.params.orgId) {
     res.sendStatus(400)
@@ -310,6 +313,9 @@ router.get('/:orgId/applications', ensureSponsor, async (req, res) => {
 
 // remove a specific driver from a specific organization and nuke their points
 router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   // required params
   if (!(req.params.orgId && req.params.driverId)) {
     res.sendStatus(400)
@@ -375,6 +381,9 @@ router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
 
 // remove a specific staffer from a specific organization
 router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   // required params
   if (!(req.params.orgId && req.params.staffId)) {
     res.sendStatus(400)
@@ -464,6 +473,10 @@ router.post('/:orgId/application', ensureAuthenticated, async (req, res) => {
 
 // update an application
 router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
+
   const result = await prisma.application.update({
     where: {
       id: Number(req.params.appId)

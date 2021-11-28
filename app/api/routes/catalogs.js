@@ -60,6 +60,9 @@ router.post('/:id/item', ensureSponsor, async (req, res) => {
 })
 
 router.delete('/item/:itemId', ensureSponsor, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   const itemId = req.params.itemId ? Number(req.params.itemId) : null
   if (!itemId) {
     res.sendStatus(400)

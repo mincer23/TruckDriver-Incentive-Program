@@ -108,6 +108,9 @@ router.get('/:userId/catalogs', ensureAuthenticated, async (req, res) => {
 
 // update a user
 router.put('/:id', ensureAuthenticated, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   // only allow admins or the user in question to update a user
   if (Number(req.params.id) !== req.session.user.id && !req.session.user.isAdmin) {
     res.sendStatus(400)
@@ -353,6 +356,9 @@ router.post('/:userId/order', ensureAuthenticated, async (req, res) => {
 
 // modify an order
 router.put('/:userId/order/:orderId', ensureAuthenticated, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   const userId = Number(req.params.userId)
   const orderId = Number(req.params.orderId)
   const status = req.body?.status ? String(req.body?.status) : null
@@ -404,6 +410,9 @@ router.get('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
 // commit a point change to a user
 // `change` field in PUT data should be positive for addition, negative for subtraction.
 router.put('/:userId/:orgId/points', ensureAuthenticated, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
   // required fields
   const userId = Number(req.params.userId)
   const orgId = Number(req.params.orgId)
