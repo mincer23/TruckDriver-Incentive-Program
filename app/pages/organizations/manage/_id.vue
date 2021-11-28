@@ -49,6 +49,15 @@
           </b-card>
         </b-col>
         <b-col cols="12">
+          <b-card title="View Reports">
+            <b-container>
+                <b-col cols="12" class="d-flex justify-content-center py-3">
+                  <b-button variant="primary" to="/organizations/manage/reports">View Reports</b-button>
+                </b-col>
+            </b-container>
+          </b-card>
+        </b-col>
+        <b-col cols="12">
           <b-card title="Upload Header Image">
             <b-form @submit="uploadHeaderImage">
               <b-form-file
