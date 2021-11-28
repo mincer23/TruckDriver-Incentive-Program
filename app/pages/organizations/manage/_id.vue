@@ -233,7 +233,7 @@ export default {
         question: this.question,
         answer: this.answer
       }
-      const result = await this.$http.$post('/api/users', data)
+      const result = await this.$http.$post('/api/organizations' + this.orgId + '/user', data)
       this.status = !!result
     },
     isPasswordStrong () {
