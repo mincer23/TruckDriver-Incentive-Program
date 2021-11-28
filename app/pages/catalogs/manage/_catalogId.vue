@@ -70,7 +70,7 @@ export default {
     async removeItem (item) {
       try {
         // eslint-disable-next-line no-unused-vars
-        const result = await this.$http.$delete('/api/catalogs/item/' + item.id)
+        const result = await this.$http.$post('/api/catalogs/deleteitem/' + item.id)
         this.$fetch()
       } catch {
         console.log('error')

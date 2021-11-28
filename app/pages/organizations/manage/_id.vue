@@ -220,13 +220,13 @@ export default {
       this.$fetch()
     },
     async removeDriver (id) {
-      const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/driver/' + id)
+      const result = await this.$http.$post('/api/organizations/' + this.orgId + '/driver/' + id)
       if (result) {
         this.update()
       }
     },
     async removeStaff (id) {
-      const result = await this.$http.$delete('/api/organizations/' + this.orgId + '/staff/' + id)
+      const result = await this.$http.$post('/api/organizations/' + this.orgId + '/staff/' + id)
       if (result) {
         this.update()
       }

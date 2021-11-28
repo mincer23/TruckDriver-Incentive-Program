@@ -312,7 +312,7 @@ router.get('/:orgId/applications', ensureSponsor, async (req, res) => {
 })
 
 // remove a specific driver from a specific organization and nuke their points
-router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
+router.post('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
@@ -380,7 +380,7 @@ router.delete('/:orgId/driver/:driverId', ensureSponsor, async (req, res) => {
 })
 
 // remove a specific staffer from a specific organization
-router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
+router.post('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
