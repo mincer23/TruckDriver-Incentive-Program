@@ -4,9 +4,9 @@
     <b-container>
       <b-row>
         <b-col>
-          <b-form-select v-model="priorityDriver" :options="drivers" />
+          <b-form-select v-model="priorityDriver" :options="drivers" class="mb-3" />
           <b-card title="Driver Point Changes">
-            <b-table striped hover :items="realData" />
+            <b-table striped hover :items="realData" :fields="fields" />
           </b-card>
         </b-col>
       </b-row>
@@ -20,7 +20,15 @@ export default {
   data () {
     return {
       pointEvents: [],
-      priorityDriver: null
+      priorityDriver: null,
+      fields: [
+        { key: 'driver_name', sortable: true },
+        { key: 'point_change', sortable: true },
+        { key: 'total_points', sortable: true },
+        { key: 'date_of_change', sortable: true },
+        { key: 'name_of_changer', sortable: true },
+        { key: 'reason', sortable: true }
+      ]
     }
   },
   async fetch () {
