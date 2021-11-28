@@ -8,21 +8,6 @@
           </h1>
           <br>
           <div class="form-input">
-            <label class="label">Account Level</label>
-            <select id="accountType" v-model="accountType" class="form-control">
-              <option value="null">
-                Choose account type...
-              </option>
-              <option value="0">
-                Driver Account
-              </option>
-              <option value="1">
-                Sponsor Account
-              </option>
-            </select>
-          </div>
-          <br>
-          <div class="form-input">
             <label class="label">First Name</label>
             <input
               v-model="firstName"
@@ -126,6 +111,7 @@
             <label for="answer">Security Question Answer</label>
             <input v-model="answer" type="text" class="form-control" placeholder="Type your answer..." required>
           </div>
+          <br>
           <div>
             <b-form-checkbox
               v-model="terms"
@@ -175,7 +161,6 @@ export default {
   layout: 'signedout',
   data () {
     return {
-      account: '',
       firstName: '',
       lastName: '',
       email: '',
