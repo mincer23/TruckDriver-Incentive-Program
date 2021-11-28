@@ -489,12 +489,31 @@ router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
       data: {
         drivers: {
           connect: {
-            id: result.user.id
+            id: Number(result.user.id)
           }
         }
       }
     })
     if (!addUser) {
+      res.sendStatus(400)
+      return
+    }
+    const createPoints = await prisma.points.create({
+      data: {
+        user: {
+          connect: {
+            id: Number(result.user.id)
+          }
+        },
+        organization: {
+          connect: {
+            id: Number(req.params.orgId)
+          }
+        },
+        balance: 0
+      }
+    })
+    if (!createPoints) {
       res.sendStatus(400)
       return
     }
