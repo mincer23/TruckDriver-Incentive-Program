@@ -6,6 +6,23 @@ const express = require('express')
 const upload = require('multer')({ dest: 'static/uploads/' })
 const router = express.Router()
 
+router.get('/:id/events', async (req, res) => {
+  const result = await prisma.logEvent.findMany({
+    where: {
+      id: Number(req.params.id)
+    },
+    include: {
+      user: true,
+      balance: {
+        include: {
+          organization: true
+        }
+      }
+    }
+  })
+  res.json(result)
+})
+
 // get all organizations (used for search/browsing)
 router.get('/', ensureAuthenticated, async (req, res) => {
   const result = await prisma.organization.findMany({
