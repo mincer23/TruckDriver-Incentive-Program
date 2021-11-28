@@ -24,6 +24,8 @@ model User {
   balances       Points[]
   applications   Application[]
   logs           LogEvent[]
+  secretQuestion Int            @default(0)
+  secretAnswerHash String       @db.VarChar(255)
 
   @@index([id])
 }
@@ -73,6 +75,7 @@ model Item {
   price          Decimal        @db.Decimal(10,2)
   name           String         @db.VarChar(50)
   description    String         @db.VarChar(500)
+  image          String?        @db.VarChar(255)
   catalogs       Catalog[]
   orders         Order[]
 
@@ -101,6 +104,7 @@ model Points {
   organization   Organization   @relation(fields: [orgId], references: [id])
   orgId          Int
   balance        Decimal        @db.Decimal(10, 2)
+  events         LogEvent[]
 
   @@id([userId, orgId])
 }
@@ -113,9 +117,9 @@ model LogEvent {
   ipAddress      String         @db.VarChar(15)
   modelName      String?        @db.VarChar(12) // "ORGANIZATION" "POINTS" "USER" etc
   reason         String?        @db.VarChar(255)
-  objectId       Int?           // ex: point update, this is the actual balance id
-  orgId          Int?           // ex: point update, this is the id of the org who reduced the points
-  actorId        Int?           // ex: point update, this is the id of the user who told the org to reduce points
+  balance        Points?        @relation(fields: [balanceUserId, balanceOrgId], references: [userId, orgId])
+  balanceUserId  Int?
+  balanceOrgId   Int?
   transaction    Order?         @relation(fields: [transactionId], references: [id])
   transactionId  Int?
   accessType     String?        @db.VarChar(6) // "CREATE" "MODIFY" "DELETE"

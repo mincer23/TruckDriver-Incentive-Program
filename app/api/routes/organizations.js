@@ -1,9 +1,78 @@
 import validator from 'validator'
 import { prisma } from '../prisma.js'
 import { ensureAdmin, ensureAuthenticated, ensureSponsor } from '../utilities.js'
+const bcrypt = require('bcrypt')
 const express = require('express')
 const upload = require('multer')({ dest: 'static/uploads/' })
 const router = express.Router()
+
+router.get('/:id/events', async (req, res) => {
+  const query = await prisma.logEvent.findMany({
+    include: {
+      user: true,
+      balance: {
+        include: {
+          organization: true
+        }
+      }
+    }
+  })
+  const result = query.filter(elem => elem?.balance?.organization.id === Number(req.params.id))
+  res.json(result)
+})
+
+// a different approach that's useful for us in admin page
+router.get('/transactions', async (req, res) => {
+  const transactions = await prisma.organization.findMany({
+    include: {
+      drivers: {
+        select: {
+          logs: {
+            where: {
+              transactionId: {
+                not: null
+              }
+            }
+          },
+          firstName: true,
+          lastName: true,
+          id: true
+        }
+      }
+    }
+  })
+  const purchaseCounts = await prisma.item.findMany({
+    select: {
+      _count: {
+        select: {
+          orders: true
+        }
+      },
+      price: true,
+      name: true
+    }
+  })
+  const driverPurchases = await prisma.user.findMany({
+    include: {
+      orders: {
+        include: {
+          event: true,
+          catalog: {
+            include: {
+              organization: true
+            }
+          },
+          _count: {
+            select: {
+              items: true
+            }
+          }
+        }
+      }
+    }
+  })
+  res.json({ transactions, purchaseCounts, driverPurchases })
+})
 
 // get all organizations (used for search/browsing)
 router.get('/', ensureAuthenticated, async (req, res) => {
@@ -86,6 +155,59 @@ router.post('/', ensureAuthenticated, async (req, res) => {
     }
   } else {
     res.sendStatus(400)
+  }
+})
+
+router.post('/:orgId/user', ensureSponsor, async (req, res) => {
+  const orgId = req.params?.orgId
+  const userName = req.body?.userName
+  const password = req.body?.password
+  const email = req.body?.email
+  const firstName = req.body?.firstName
+  const lastName = req.body?.lastName
+  const question = req.body?.question
+  const answer = req.body?.answer
+  // do we have all required fields
+  if (!userName || !password || !email || !firstName || !lastName || typeof question === 'undefined' || !answer) {
+    res.sendStatus(400)
+    return
+  }
+  // does username or email already exist
+  // have to destructure because findMany always gives back a list
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { userName },
+        { email }
+      ]
+    }
+  })
+  // yes
+  if (existingUser) {
+    res.sendStatus(400)
+    return
+  }
+  // no
+  const newUser = await prisma.user.create({
+    data: {
+      userName,
+      passwordHash: await bcrypt.hash(password, 10),
+      email,
+      firstName,
+      lastName,
+      staffFor: {
+        connect: {
+          id: Number(orgId)
+        }
+      },
+      secretQuestion: Number(question),
+      secretAnswerHash: await bcrypt.hash(answer, 10)
+    }
+  })
+  if (await newUser) { // create query was successful
+    res.sendStatus(200)
+  } else { // something broke on our end
+    res.sendStatus(500)
   }
 })
 
@@ -260,6 +382,7 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   // required params
   if (!(req.params.orgId && req.params.staffId)) {
     res.sendStatus(400)
+    return
   }
 
   // make our params just a little easier to work with
@@ -288,8 +411,9 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   const staffOrgIds = staffOrgs.staffFor.map(elem => elem.id)
   const requesterOrgIds = requesterOrgs.staffFor.map(elem => elem.id)
   // if the requester is a manager for an org that the driver belongs to
-  if (!(requesterOrgIds.includes(orgId) && staffOrgIds.includes(orgId))) {
+  if (!(requesterOrgIds.includes(orgId) && staffOrgIds.includes(orgId)) && !req.session.user.isAdmin) {
     res.sendStatus(400)
+    return
   }
   // remove user from org
   const orgDelete = await prisma.organization.update({
@@ -306,15 +430,44 @@ router.delete('/:orgId/staff/:staffId', ensureSponsor, async (req, res) => {
   })
   if (!orgDelete) {
     res.sendStatus(500)
+    return
   }
 
   res.sendStatus(200)
 })
 
-router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
-  if (!req.body.accept || typeof req.body.accept !== 'boolean') {
+// apply to an organization
+router.post('/:orgId/application', ensureAuthenticated, async (req, res) => {
+  // required fields
+  const userId = req.body?.userId ? Number(req.body.userId) : null
+  const orgId = Number(req.params.orgId)
+  if (!userId || !orgId) {
     res.sendStatus(400)
+    return
   }
+  const result = await prisma.application.create({
+    data: {
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      organization: {
+        connect: {
+          id: orgId
+        }
+      }
+    }
+  })
+  if (result) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
+// update an application
+router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
   const result = await prisma.application.update({
     where: {
       id: Number(req.params.appId)
@@ -334,13 +487,33 @@ router.put('/:orgId/applications/:appId', ensureSponsor, async (req, res) => {
       data: {
         drivers: {
           connect: {
-            id: result.user.id
+            id: Number(result.user.id)
           }
         }
       }
     })
     if (!addUser) {
       res.sendStatus(400)
+      return
+    }
+    const createPoints = await prisma.points.create({
+      data: {
+        user: {
+          connect: {
+            id: Number(result.user.id)
+          }
+        },
+        organization: {
+          connect: {
+            id: Number(req.params.orgId)
+          }
+        },
+        balance: 0
+      }
+    })
+    if (!createPoints) {
+      res.sendStatus(400)
+      return
     }
   }
   if (result) {

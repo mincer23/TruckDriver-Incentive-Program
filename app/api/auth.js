@@ -5,12 +5,17 @@ export default function (req, res, next) {
   if (req.path !== '/login' && req.path !== '/api/login' && req.path !== '/api/users') { // yes
     // does the session exist
     if (req.session?.user) {
+      if (req.path.startsWith('/admin') && !req.session?.user.isAdmin) {
+        // console.log('REJECTED UNAUTHOIRZED ACCESS @ IP: ' + req.socket.remoteAddress + ' TO ROUTE: ' + req.path)
+        res.redirect('/')
+        return
+      }
       // all questions OK, move on
-      console.log('ALLOWED ACCESS TO ' + req.session.user.userName + ' TO ROUTE: ' + req.path)
+      // console.log('ALLOWED ACCESS TO ' + req.session.user.userName + ' TO ROUTE: ' + req.path)
       next()
     } else {
       // if any of the tests fail, redirect to login
-      console.log('REJECTED UNAUTHOIRZED ACCESS @ IP: ' + req.socket.remoteAddress + ' TO ROUTE: ' + req.path)
+      // console.log('REJECTED UNAUTHOIRZED ACCESS @ IP: ' + req.socket.remoteAddress + ' TO ROUTE: ' + req.path)
       res.redirect('/login')
     }
   } else { // no

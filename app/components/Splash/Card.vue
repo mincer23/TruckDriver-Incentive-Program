@@ -10,28 +10,30 @@
       <span class="h2"><slot /></span>
     </b-card-text>
 
-    <b-button v-b-toggle.balance-collapse variant="info" class="mb-3">
-      {{ collapseButtonText }}
+    <b-button :to="buttonTo" variant="info" class="mb-3">
+      {{ buttonText }}
     </b-button>
-
-    <SplashCardCollapseContainer
-      v-if="transactions.length > 0"
-      id="balance-collapse"
-      :transactions="transactions"
-    />
   </b-card>
 </template>
 
 <script>
 export default {
   props: {
-    collapseButtonText: {
+    id: {
+      type: String,
+      default: '0'
+    },
+    buttonText: {
       type: String,
       default: 'Recent History'
     },
+    buttonTo: {
+      type: String,
+      default: '/points'
+    },
     header: {
       type: String,
-      default: 'Point Balance'
+      default: 'Point Balances'
     },
     bgVariant: {
       type: String,

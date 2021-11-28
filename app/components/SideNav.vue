@@ -1,9 +1,14 @@
 <template>
-  <b-container class="p-0 m-0" fluid>
+  <b-container class="p-0 m-0 position-fixed" fluid>
     <b-row class="my-5 mx-3 absolutely-no-gutters" no-gutters>
       <b-col cols="12" class="ml-4 pb-5">
         <h4>Menu</h4>
       </b-col>
+      <NuxtLink v-if="getUser.isAdmin" to="/admin" class="w-100 text-decoration-none text-white p-0 ml-4">
+        <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
+          <span>Admin Panel</span>
+        </b-col>
+      </NuxtLink>
       <NuxtLink to="/" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Dashboard</span>
@@ -14,12 +19,12 @@
           <span>Points</span>
         </b-col>
       </NuxtLink>
-      <NuxtLink to="/orders" class="w-100 text-decoration-none text-white p-0 ml-4">
+      <NuxtLink :to="'/users/' + getUser.id + '/orders'" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Orders</span>
         </b-col>
       </NuxtLink>
-      <NuxtLink to="/catalog" class="w-100 text-decoration-none text-white p-0 ml-4">
+      <NuxtLink to="/catalogs" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Catalog</span>
         </b-col>
@@ -29,15 +34,13 @@
           <span>Sponsors</span>
         </b-col>
       </NuxtLink>
-      <b-col cols="12" class="w-100 p-0 m-0">
-        <hr class="w-100">
-      </b-col>
+      <b-col cols="12" class="w-100 p-0 m-0 bordered" />
       <NuxtLink :to="'/users/' + getUser.id" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Account</span>
         </b-col>
       </NuxtLink>
-      <NuxtLink to="/settings" class="w-100 text-decoration-none text-white p-0 ml-4">
+      <NuxtLink to="/editInfo" class="w-100 text-decoration-none text-white p-0 ml-4">
         <b-col cols="12" class="d-flex align-items-center p-0 m-0 entry">
           <span>Settings</span>
         </b-col>
@@ -62,7 +65,7 @@ export default {
     margin-right: 0 !important;
   }
 
-  hr {
+  .bordered {
     width: 100%;
     border-bottom: 1px solid white;
   }

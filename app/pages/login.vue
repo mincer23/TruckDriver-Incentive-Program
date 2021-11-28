@@ -8,6 +8,7 @@
           <h1 class="card-title" style="text-align: center">Log In</h1>
           <h6 class="card-subtitle mb-2 text-muted" style="text-align: center">Enter your username and password</h6>
           <br>
+          <Notification  v-if="error" :message="error" />
           <div class="form-input">
             <label>Username</label>
             <input v-model="userName" name="username" type="text" class="form-control form-control-lg">
@@ -38,15 +39,21 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import Notification from '~/components/Notification'
 export default {
   layout: 'signedout',
   data () {
     return {
       userName: null,
       password: null,
-      state: null
+      state: null,
+      error: null
     }
   },
+  componets: {
+    Notification
+  },
+
   methods: {
     ...mapMutations(['setUser']),
     async onSubmit (event) {
@@ -63,6 +70,7 @@ export default {
         })
       } catch {
         this.state = false
+        this.error = 'Invalid Username or Password, please try again'
       }
     }
   }
@@ -73,5 +81,15 @@ export default {
 .card {
   margin: auto;
   width: 500px;
+}
+.notification {
+  margin: 10px 0px;
+  padding: 20px;
+  color: #D8000C;
+  background-color: #FFD2D2;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #888;
+  border-radius: .5em;
+  text-align: center;
 }
 </style>

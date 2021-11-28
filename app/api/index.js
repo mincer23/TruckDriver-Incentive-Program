@@ -1,5 +1,5 @@
 import { prisma } from './prisma.js'
-const bcrypt = require('bcrypt')
+import { comparePassword, ensureAdmin } from './utilities.js'
 
 const express = require('express')
 const session = require('express-session')
@@ -42,15 +42,36 @@ app.post('/login', async (req, res) => {
         driverFor: true,
         staffFor: true,
         orders: true,
-        balances: true
+        balances: {
+          include: {
+            organization: true
+          }
+        }
       }
     })
     if (userData) { // prisma returns null on no object found
       if (await comparePassword(req.body.password, userData.passwordHash)) {
         delete userData.passwordHash // dont put the password in the session obj
+        delete userData.secretAnswerHash // dont put any secret stuff in session obj
+        delete userData.secretQuestion
         req.session.user = userData
         res.json(userData)
       } else { // bad password
+        // eslint-disable-next-line no-unused-vars
+        const badPasswordResult = await prisma.user.update({
+          where: {
+            id: userData.id
+          },
+          data: {
+            logs: {
+              create: {
+                modelName: 'USER',
+                accessType: 'MODIFY',
+                ipAddress: req.ip
+              }
+            }
+          }
+        })
         res.sendStatus(400)
       }
     } else { // no user found
@@ -86,17 +107,20 @@ app.get('/session', (req, res) => {
   res.json(req.session.user)
 })
 
-// https://www.thiscodeworks.com/async-function-for-bcrypt-compare-bcrypt-authentication-express-nodejs-password/60bcedfdf7d259001478aeb7
-async function comparePassword (password, hash) {
-  try {
-    const result = await bcrypt.compare(password, hash)
-    return result
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error)
-  }
-  return false
-}
+app.get('/events', ensureAdmin, async (req, res) => {
+  const events = await prisma.logEvent.findMany({
+    include: {
+      user: true,
+      transaction: true,
+      balance: {
+        include: {
+          organization: true
+        }
+      }
+    }
+  }) // yes, this is in earnest.
+  res.json(events)
+})
 
 // Register the app handler with Nuxt
 export default {

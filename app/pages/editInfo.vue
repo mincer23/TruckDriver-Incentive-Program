@@ -1,5 +1,6 @@
 <template>
   <section class="section">
+    <Header page-title="Edit Information" :header-image="getHeaderImage" />
     <div class="container">
       <div class="columns">
         <div class="column is-4 is-offset-4">
@@ -7,7 +8,7 @@
 
           <Notification :message="error" v-if="error"/>
 
-          <form method="post" @submit.prevent="register">
+          <form method="post" @submit="onSubmit">
             <div class="field">
               <label class="label">First Name</label>
               <div class="control">
@@ -15,7 +16,7 @@
                   type="text"
                   class="input"
                   name="First Name"
-                  v-model="name1"
+                  v-model="firstName"
                   required
                 />
              </div>
@@ -28,7 +29,7 @@
                   type="text"
                   class="input"
                   name="Last Name"
-                  v-model="name2"
+                  v-model="lastName"
                   required
                 />
              </div>
@@ -45,33 +46,6 @@
                   required
                 />
              </div>
-            </div>
-            <div class="field">
-              <label class="label">Username</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="username"
-                  v-model="username"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input
-                  type="password"
-                  class="input"
-                  name="password"
-                  v-model="password"
-                  required
-                />
-              </div>
-              <client-only>
-                  <Password v-model="password" :strengthMeterOnly="true"/>
-              </client-only>
             </div>
              <div class="field">
               <label class="label">Confirm Password</label>
@@ -90,28 +64,50 @@
             </div>
           </form>
           </div>
+          <div class="updatePassword text-center">
+            <NuxtLink to="/updatePassword">
+              Need to change your password?
+            </NuxtLink>
+          </div>
         </div>
       </div>
   </section>
 </template>
 
 <script>
-import Notification from '~/components/Notification'
-import Password from '~/node_modules/vue-password-strength-meter'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
-  components: {
-    Notification,
-    Password
-  },
   data () {
     return {
-      name1: '',
-      name2: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      username: '',
-      password: '',
       confirm: '',
       error: null
+    }
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getHeaderImage'])
+  },
+  methods: {
+    ...mapMutations(['setUser']),
+    async onSubmit (event) {
+      event.preventDefault()
+      const data = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        oldpassword: this.confirm
+      }
+      try {
+        const result = await this.$http.$put('/api/users/' + this.getUser.id, data)
+        this.setUser(result)
+        this.$nextTick(() => {
+          this.$router.push('/')
+        })
+      } catch {
+        this.state = false
+      }
     }
   }
 }

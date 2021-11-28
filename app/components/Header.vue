@@ -1,5 +1,5 @@
 <template>
-  <b-navbar variant="light" type="light" class="mb-3">
+  <b-navbar variant="light" type="light" class="mb-3 sticky-top border-bottom">
     <b-navbar-brand class="text-black font-weight-bold">
       <b-img v-if="headerImage" :src="'/uploads/' + headerImage" fluid class="headerImage" /> {{ pageTitle }}
     </b-navbar-brand>
@@ -10,12 +10,14 @@
       <b-nav-item class="bordered mr-5">
         <b-icon-bell-fill class="mr-4" />
       </b-nav-item>
-      <!-- temporary -->
-      <b-nav-item to="/profilePage">
+      <b-nav-item :to="'/users/' + getUser.id">
         Profile
       </b-nav-item>
-      <b-nav-item to="/applications">
+      <b-nav-item to="/organizations/applications">
         Applications
+      </b-nav-item>
+      <b-nav-item to="/catalogs/cart">
+        Cart <b-badge v-if="getCart.length > 0">{{ getCart.length }}</b-badge>
       </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
@@ -26,7 +28,7 @@
         <b-dropdown-item :to="'/users/' + getUser.id">
           Account
         </b-dropdown-item>
-        <b-dropdown-item href="/settings">
+        <b-dropdown-item href="/editInfo">
           Settings
         </b-dropdown-item>
         <b-dropdown-item href="/api/logout">
@@ -57,7 +59,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser'])
+    ...mapGetters(['getUser', 'getHeaderImage', 'getCart'])
   }
 }
 </script>

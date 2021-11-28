@@ -4,7 +4,7 @@
       <div class="signup m-5">
         <form @submit="onSubmit">
           <h1 class="card-title">
-            Sign Up!
+            Create New Driver
           </h1>
           <br>
           <div class="form-input">
@@ -112,33 +112,12 @@
             <input v-model="answer" type="text" class="form-control" placeholder="Type your answer..." required>
           </div>
           <br>
-          <div>
-            <b-form-checkbox
-              v-model="terms"
-              value="accepted"
-              unchecked-value="not_accepted"
-              required
-            >
-              I accept the <a href="termsofservice.html">Terms of Service</a> and <a href="privacypolicy.html">Privacy Policy</a>
-            </b-form-checkbox>
-          </div>
-          <br>
           <Notification class="error" v-if="email!=confirmemail" :message="email_error" />
           <Notification class="error" v-if="password!=confirm" :message="error_password" />
           <Notification class="error" v-if="strong!=true && password!=''" :message="error_strong" />
-          <div class="login-link text-left">
-            <NuxtLink to="/login">
-              Already have an account?
-            </NuxtLink>
-          </div>
-          <div class="forgot-password text-left">
-            <NuxtLink to="/forgot-password">
-              Forgot password?
-            </NuxtLink>
-          </div>
           <br>
           <div class="control">
-            <button :disabled="terms==='not_accepted' || strong!=true" type="submit" class="btn btn-primary btn-lg btn-square">
+            <button :disabled="strong!=true" type="submit" class="btn btn-primary btn-lg btn-square">
               Register
             </button>
           </div>
@@ -173,7 +152,6 @@ export default {
       email_error: 'Emails do not match',
       error_strong: 'Password is too weak',
       state: null,
-      terms: 'not_accepted',
       accountType: null,
       confirmemail: '',
       strong: null
@@ -194,13 +172,9 @@ export default {
       }
       const result = await this.$http.$post('/api/users', data)
       this.state = !!result
-      const login = await this.$http.$post('/api/login', data)
-      if (login) {
+      if (this.state) {
         this.$nextTick(() => {
-          this.setUser(login)
-          this.$nextTick(() => {
-            this.$router.push('/')
-          })
+          this.$router.push('/admin')
         })
       }
     },
