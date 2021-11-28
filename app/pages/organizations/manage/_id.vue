@@ -61,7 +61,7 @@
         </b-col>
         <b-col cols="12">
           <b-card title="Add Sponsor User">
-            <b-form @sumbit="createStaff">
+            <b-form @submit="createStaff">
               <br>
               <label>First Name</label>
               <b-form-input
@@ -233,7 +233,7 @@ export default {
         question: this.question,
         answer: this.answer
       }
-      const result = await this.$http.$post('/api/organizations' + this.orgId + '/user', data)
+      const result = await this.$http.$post('/api/organizations/' + this.orgId + '/user', data)
       this.status = !!result
     },
     isPasswordStrong () {
