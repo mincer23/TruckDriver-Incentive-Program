@@ -40,7 +40,7 @@
                     <b-button v-if="userIsDriverForOrg(org.id) && !userHasAppliedToOrg(org.id)" variant="success" disabled block>
                       Joined!
                     </b-button>
-                    <b-button v-if="!userIsDriverForOrg(org.id) && userHasAppliedToOrg(org.id)" variant="info" disabled block>
+                    <b-button v-else-if="!userIsDriverForOrg(org.id) && userHasAppliedToOrg(org.id)" variant="info" disabled block>
                       Applied!
                     </b-button>
                     <b-button v-else variant="primary" block @click="applyToOrg(org)">
@@ -83,14 +83,15 @@ export default {
   methods: {
     userIsDriverForOrg (orgId) {
       const userOrgsAsDriver = this.getUser?.driverFor.map(elem => elem.id)
-      if (userOrgsAsDriver?.length > 0 && userOrgsAsDriver.includes(orgId)) {
+      if (userOrgsAsDriver?.includes(orgId)) {
         return true
       } else {
         return false
       }
     },
     userHasAppliedToOrg (orgId) {
-      const userAppOrgIds = this.userApplications.map(elem => elem.organization.id)
+      const openApps = this.userApplications.filter(elem => elem.status === 'WAITING')
+      const userAppOrgIds = openApps.map(elem => elem.organization.id)
       if (userAppOrgIds.includes(orgId)) { return true }
       return false
     },
